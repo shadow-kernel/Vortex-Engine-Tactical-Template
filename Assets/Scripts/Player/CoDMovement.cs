@@ -174,8 +174,12 @@ public class CoDMovement : VortexBehaviour
     // capsule
     public float CapsuleRadius = 0.35f;
     public float CapsuleHeight = 1.85f;
+    public float CrouchCapsuleHeight = 1.3f;    // crouching shrinks the collision capsule...
+    public float SlideCapsuleHeight  = 0.95f;   // ...and a slide takes you under ~1 m gaps
 
     private float _standEyeY;
+    private float _capH = -1f;     // current collision height (stance)
+    private bool  _lowCeiling;     // something is overhead: the player can't stand up yet
     private float _eyeCur, _fovCur;
     private float _vx, _vz, _vy;
     private bool  _grounded, _prevGrounded;
@@ -386,7 +390,7 @@ public class CoDMovement : VortexBehaviour
         _adsKeyHeld = adsKey;
         bool ads    = ((UserSettings.AdsToggle ? _adsLatched : adsKey) || _forceAds) && !_mantling;
         if (_mantling) _adsLatched = false;
-        bool crouch = Input.GetKey("LeftCtrl") || Input.GetKey("C") || Input.GetGamepadButton("B");
+        bool crouch = Input.GetKey("LeftCtrl") || Input.GetKey("C") || Input.GetGamepadButton("B") || _lowCeiling;
         bool wKey   = Input.GetKey("W");
         bool fwdHeld = wKey || Input.LeftStickY > 0.3f;
         bool fireHeld = PlayerRig.FireHeld;   // the weapon reports the trigger: firing ENDS a sprint (no run-and-gun)
@@ -400,6 +404,7 @@ public class CoDMovement : VortexBehaviour
         if (!sprint) _tacSprint = false;               // dropping sprint clears tac latch
         bool tac = sprint && _tacSprint;
         // sprint-out: after a sprint the gun has to come back up before it can fire
+        bool wasSprinting = _wasSprinting;   // crouching ends the sprint this frame — the slide checks the last one
         if (_wasSprinting && !sprint) _sprintOutT = SprintOutTime;
         _wasSprinting = sprint;
         if (_sprintOutT > 0f) _sprintOutT -= dt;
@@ -431,7 +436,7 @@ public class CoDMovement : VortexBehaviour
 
         // ---------------- slide start ----------------
         bool slideKey = crouch;
-        if (!_sliding && !_mantling && slideKey && (sprint || tac) && _speedSmooth > SprintSpeed * 0.7f)
+        if (!_sliding && !_mantling && slideKey && (sprint || tac || wasSprinting) && _grounded && _speedSmooth > SprintSpeed * 0.7f)
         {
             _sliding = true; _slideT = SlideTime;
             _vx += wishX * SlideBoost; _vz += wishZ * SlideBoost;
@@ -441,6 +446,15 @@ public class CoDMovement : VortexBehaviour
             _slideT -= dt;
             if (_slideT <= 0f || (!slideKey)) _sliding = false;
         }
+
+        // ---------------- stance capsule ----------------
+        // crouch / slide shrink the collision; standing back up (or slide -> crouch) needs headroom, otherwise the
+        // player stays low until there's room (slid under an obstacle -> crouched under it)
+        if (_capH < 0f) _capH = CapsuleHeight;
+        float wantH = _sliding ? SlideCapsuleHeight : crouch ? CrouchCapsuleHeight : CapsuleHeight;
+        if (wantH > _capH + 0.001f && !HasHeadroom(_capH, wantH)) wantH = _capH;
+        _capH = wantH;
+        _lowCeiling = !_sliding && _capH < CapsuleHeight - 0.001f && !HasHeadroom(_capH, CapsuleHeight);
 
         float maxSpeed = _sliding ? TacSprintSpeed
                        : ads    ? AdsSpeed
@@ -487,6 +501,7 @@ public class CoDMovement : VortexBehaviour
 
         // ---------------- stance eye height ----------------
         float targetEye = _standEyeY - (_sliding ? SlideDrop : crouch ? CrouchDrop : 0f);
+        if (targetEye > _capH - 0.12f) targetEye = _capH - 0.12f;   // the camera stays inside the capsule
         _eyeCur += (targetEye - _eyeCur) * System.Math.Min(1f, 12f * dt);
 
         // ---------------- move through collision (feet) ----------------
@@ -503,7 +518,7 @@ public class CoDMovement : VortexBehaviour
         {
             Vector3 disp = new Vector3(_vx * dt, _vy * dt, _vz * dt);
             float feetYBefore = _feet.Y; bool groundedBefore = _grounded;
-            _feet = Physics.MoveCharacter(_feet, CapsuleRadius, CapsuleHeight, disp, EntityId);
+            _feet = Physics.MoveCharacter(_feet, CapsuleRadius, _capH, disp, EntityId);
             _grounded = Physics.Grounded;
             // step smoothing (CoD): a curb/stair changes the feet height in one frame — the camera eases into it
             float stepDy = _feet.Y - feetYBefore - _vy * dt;
@@ -600,8 +615,22 @@ public class CoDMovement : VortexBehaviour
             _logT += dt;
             Debug.Log("[MV] t=" + _logT.ToString("0.000", System.Globalization.CultureInfo.InvariantCulture) + " feet=" + _feet + " v=" + new Vector3(_vx, _vy, _vz)
                 + " g=" + (_grounded ? 1 : 0) + " sprint=" + (sprint ? 1 : 0) + " mantle=" + (_mantling ? 1 : 0) + " lean=" + _leanCur.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)
-                + " roll=" + _rollCur.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture) + " cam=" + Position + " ammo=" + PlayerRig.Ammo + " ads=" + (ads ? 1 : 0) + " fire=" + (fireHeld ? 1 : 0) + " so=" + PlayerRig.SprintOut.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture));
+                + " roll=" + _rollCur.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture) + " cam=" + Position + " ammo=" + PlayerRig.Ammo + " ads=" + (ads ? 1 : 0) + " fire=" + (fireHeld ? 1 : 0) + " so=" + PlayerRig.SprintOut.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)
+                + " cap=" + _capH.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture) + " slide=" + (_sliding ? 1 : 0) + " low=" + (_lowCeiling ? 1 : 0));
         }
+    }
+
+    // is the space from fromH up to toH above the feet free? (centre + four rays around the capsule)
+    private bool HasHeadroom(float fromH, float toH)
+    {
+        float len = toH - fromH + 0.05f, r = CapsuleRadius * 0.7f, y = _feet.Y + fromH - 0.05f;
+        if (len <= 0.05f) return true;
+        if (Physics.Raycast(new Vector3(_feet.X, y, _feet.Z), Vector3.Up, len)) return false;
+        if (Physics.Raycast(new Vector3(_feet.X + r, y, _feet.Z), Vector3.Up, len)) return false;
+        if (Physics.Raycast(new Vector3(_feet.X - r, y, _feet.Z), Vector3.Up, len)) return false;
+        if (Physics.Raycast(new Vector3(_feet.X, y, _feet.Z + r), Vector3.Up, len)) return false;
+        if (Physics.Raycast(new Vector3(_feet.X, y, _feet.Z - r), Vector3.Up, len)) return false;
+        return true;
     }
 
     /// <summary>Look for a climbable ledge in the move direction: a blocking face at knee height, a walkable top between
@@ -612,7 +641,9 @@ public class CoDMovement : VortexBehaviour
         Vector3 fwd = new Vector3(dirX, 0f, dirZ);
         RaycastHit face;
         if (!Physics.Raycast(new Vector3(_feet.X, _feet.Y + 0.35f, _feet.Z), fwd, MantleReach + CapsuleRadius, out face)) return false;
-        float tx = face.Point.X + dirX * 0.4f, tz = face.Point.Z + dirZ * 0.4f;
+        // probe the top just behind the face: thin cover (sandbags, low walls ~0.4 m) must still read as a ledge —
+        // probing deeper ran past the back edge and found the ground behind it instead
+        float tx = face.Point.X + dirX * 0.18f, tz = face.Point.Z + dirZ * 0.18f;
         float topY = _feet.Y + MantleHeight + 0.4f;
         RaycastHit top;
         if (!Physics.Raycast(new Vector3(tx, topY, tz), new Vector3(0f, -1f, 0f), MantleHeight + 0.4f - MantleMinHeight, out top)) return false;
