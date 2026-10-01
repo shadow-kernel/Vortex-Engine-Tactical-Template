@@ -1,0 +1,10 @@
+{
+  "Name": "beige_wall_001_2.8x1.2", "Version": "2.0", "BaseColor": [1, 1, 1, 1],
+  "Metallic": 0, "Roughness": 1, "AmbientOcclusion": 1, "NormalStrength": 1, "HeightScale": 0.0,
+  "UseDirectXNormals": true, "EmissiveStrength": 0.0, "TwoSided": false, "BlendMode": "Opaque", "CastShadows": true, "ReceiveShadows": true,
+  "AlbedoTexture": "../../Textures/beige_wall_001/beige_wall_001_diff_2k.jpg",
+  "NormalTexture": "../../Textures/beige_wall_001/beige_wall_001_nor_dx_2k.jpg",
+  "RoughnessTexture": "../../Textures/beige_wall_001/beige_wall_001_rough_2k.jpg",
+  "AOTexture": "../../Textures/beige_wall_001/beige_wall_001_ao_2k.jpg",
+  "UVTiling": [2.7599998, 1.2], "UVOffset": [0, 0]
+}

@@ -1,0 +1,32 @@
+{
+  "Name": "UZI_Mag_Factory",
+  "Version": "2.0",
+  "BaseColor": [
+    1.5,
+    1.5,
+    1.5,
+    1
+  ],
+  "Metallic": 0.0,
+  "Roughness": 0.5,
+  "AmbientOcclusion": 1,
+  "NormalStrength": 1,
+  "HeightScale": 0.0,
+  "UseDirectXNormals": false,
+  "EmissiveStrength": 0.0,
+  "TwoSided": false,
+  "BlendMode": "Opaque",
+  "CastShadows": false,
+  "ReceiveShadows": true,
+  "AlbedoTexture": "../textures/UZI_Magazine_and_Bullet_baseColor.jpg",
+  "NormalTexture": "../textures/UZI_Magazine_and_Bullet_normal.png",
+  "OcclusionRoughnessMetallicTexture": "../textures/UZI_Magazine_and_Bullet_metallicRoughness.png",
+  "UVTiling": [
+    1,
+    1
+  ],
+  "UVOffset": [
+    0,
+    0
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "Name": "concrete_slab_wall_40.6x1.4", "Version": "2.0", "BaseColor": [1, 1, 1, 1],
+  "Metallic": 0, "Roughness": 1, "AmbientOcclusion": 1, "NormalStrength": 1, "HeightScale": 0.0,
+  "UseDirectXNormals": true, "EmissiveStrength": 0.0, "TwoSided": false, "BlendMode": "Opaque", "CastShadows": true, "ReceiveShadows": true,
+  "AlbedoTexture": "../../Textures/concrete_slab_wall/concrete_slab_wall_diff_2k.jpg",
+  "NormalTexture": "../../Textures/concrete_slab_wall/concrete_slab_wall_nor_dx_2k.jpg",
+  "RoughnessTexture": "../../Textures/concrete_slab_wall/concrete_slab_wall_rough_2k.jpg",
+  "AOTexture": "../../Textures/concrete_slab_wall/concrete_slab_wall_ao_2k.jpg",
+  "UVTiling": [40.625, 1.40625], "UVOffset": [0, 0]
+}

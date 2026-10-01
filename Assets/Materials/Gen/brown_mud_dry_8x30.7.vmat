@@ -1,0 +1,10 @@
+{
+  "Name": "brown_mud_dry_8x30.7", "Version": "2.0", "BaseColor": [1, 1, 1, 1],
+  "Metallic": 0, "Roughness": 1, "AmbientOcclusion": 1, "NormalStrength": 1, "HeightScale": 0.0,
+  "UseDirectXNormals": true, "EmissiveStrength": 0.0, "TwoSided": false, "BlendMode": "Opaque", "CastShadows": true, "ReceiveShadows": true,
+  "AlbedoTexture": "../../Textures/brown_mud_dry/brown_mud_dry_diff_2k.jpg",
+  "NormalTexture": "../../Textures/brown_mud_dry/brown_mud_dry_nor_dx_2k.jpg",
+  "RoughnessTexture": "../../Textures/brown_mud_dry/brown_mud_dry_rough_2k.jpg",
+  "AOTexture": "../../Textures/brown_mud_dry/brown_mud_dry_ao_2k.jpg",
+  "UVTiling": [8, 30.666666], "UVOffset": [0, 0]
+}

@@ -1,0 +1,6 @@
+{
+  "Name": "range_sign_lane_4", "Version": "2.0", "BaseColor": [1, 1, 1, 1], "Metallic": 0, "Roughness": 0.8,
+  "AmbientOcclusion": 1, "NormalStrength": 1, "HeightScale": 0.0, "UseDirectXNormals": true, "EmissiveStrength": 0.0, "TwoSided": false,
+  "BlendMode": "Opaque", "CastShadows": true, "ReceiveShadows": true, "AlbedoTexture": "../../Textures/Range/sign_lane_4.jpg",
+  "UVTiling": [1, 1], "UVOffset": [0, 0]
+}

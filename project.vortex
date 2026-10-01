@@ -1,0 +1,29 @@
+{
+  "id": "5c0d7a31-8e2b-4f6a-9c1d-3b7e5a2f8001",
+  "name": "Tactical Shooter",
+  "version": "1.0.0",
+  "engineVersion": "2.8.0",
+  "lastModified": "/Date(1790841600000+0200)/",
+  "createdAt": "/Date(1790841600000+0200)/",
+  "thumbnailPath": ".ve/icon.png",
+  "startSceneId": "5c0d7a31-8e2b-4f6a-9c1d-3b7e5a2f8101",
+  "lastOpenSceneId": "5c0d7a31-8e2b-4f6a-9c1d-3b7e5a2f8101",
+  "formatVersion": 2,
+  "scenes": [
+    {
+      "id": "5c0d7a31-8e2b-4f6a-9c1d-3b7e5a2f8101",
+      "name": "Range",
+      "path": "Range.vscene",
+      "loadOnStart": false
+    }
+  ],
+  "settings": {
+    "companyName": "Vortex",
+    "productName": "Tactical Shooter",
+    "defaultScreenWidth": 1920,
+    "defaultScreenHeight": 1080,
+    "fullscreenByDefault": false,
+    "vSync": true,
+    "targetFPS": 60
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "Name": "coast_sand_01_6.5x2.2_t1.15", "Version": "2.0", "BaseColor": [1.15, 1.15, 1.15, 1],
+  "Metallic": 0, "Roughness": 1, "AmbientOcclusion": 1, "NormalStrength": 1, "HeightScale": 0.0,
+  "UseDirectXNormals": true, "EmissiveStrength": 0.0, "TwoSided": false, "BlendMode": "Opaque", "CastShadows": true, "ReceiveShadows": true,
+  "AlbedoTexture": "../../Textures/coast_sand_01/coast_sand_01_diff_2k.jpg",
+  "NormalTexture": "../../Textures/coast_sand_01/coast_sand_01_nor_dx_2k.jpg",
+  "RoughnessTexture": "../../Textures/coast_sand_01/coast_sand_01_rough_2k.jpg",
+  "AOTexture": "../../Textures/coast_sand_01/coast_sand_01_ao_2k.jpg",
+  "FootstepSound": "Assets/Audio/step_concrete.wav",
+  "UVTiling": [6.5, 2.25], "UVOffset": [0, 0]
+}

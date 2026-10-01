@@ -1,0 +1,32 @@
+{
+  "Name": "Scorpion_Factory",
+  "Version": "2.0",
+  "BaseColor": [
+    2.0,
+    2.0,
+    2.0,
+    1
+  ],
+  "Metallic": 0.0,
+  "Roughness": 0.5,
+  "AmbientOcclusion": 1,
+  "NormalStrength": 1,
+  "HeightScale": 0.0,
+  "UseDirectXNormals": false,
+  "EmissiveStrength": 0.0,
+  "TwoSided": false,
+  "BlendMode": "Opaque",
+  "CastShadows": false,
+  "ReceiveShadows": true,
+  "AlbedoTexture": "../textures/CZScorpion_baseColor.jpg",
+  "NormalTexture": "../textures/CZScorpion_normal.png",
+  "OcclusionRoughnessMetallicTexture": "../textures/CZScorpion_metallicRoughness.png",
+  "UVTiling": [
+    1,
+    1
+  ],
+  "UVOffset": [
+    0,
+    0
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "Name": "UZI_Factory",
+  "Version": "2.0",
+  "BaseColor": [
+    1.7,
+    1.7,
+    1.7,
+    1
+  ],
+  "Metallic": 0.0,
+  "Roughness": 0.5,
+  "AmbientOcclusion": 1,
+  "NormalStrength": 1,
+  "HeightScale": 0.0,
+  "UseDirectXNormals": false,
+  "EmissiveStrength": 0.0,
+  "TwoSided": false,
+  "BlendMode": "Opaque",
+  "CastShadows": false,
+  "ReceiveShadows": true,
+  "AlbedoTexture": "../textures/material_7_baseColor.jpg",
+  "NormalTexture": "../textures/material_7_normal.png",
+  "OcclusionRoughnessMetallicTexture": "../textures/material_7_metallicRoughness.png",
+  "UVTiling": [
+    1,
+    1
+  ],
+  "UVOffset": [
+    0,
+    0
+  ]
+}
