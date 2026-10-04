@@ -1,0 +1,464 @@
+{
+  "vui": 1,
+  "designW": 1920,
+  "designH": 1080,
+  "root": {
+    "kind": "Panel",
+    "id": "graphicsRoot",
+    "anchor": "TopLeft",
+    "stretchX": true,
+    "stretchY": true,
+    "off": [
+      0,
+      0
+    ],
+    "size": [
+      0,
+      0
+    ],
+    "bg": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "blocksInput": false,
+    "children": [
+      {
+        "kind": "Panel",
+        "id": "graphicsArea",
+        "anchor": "Center",
+        "off": [
+          116,
+          17
+        ],
+        "size": [
+          828,
+          510
+        ],
+        "bg": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "children": [
+          {
+            "kind": "Panel",
+            "id": "graphicsRows",
+            "anchor": "TopLeft",
+            "off": [
+              0,
+              0
+            ],
+            "size": [
+              828,
+              510
+            ],
+            "bg": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "layout": "Vertical",
+            "spacing": 10,
+            "padding": 0,
+            "children": [
+              {
+                "kind": "Panel",
+                "anchor": "TopLeft",
+                "off": [
+                  0,
+                  0
+                ],
+                "size": [
+                  0,
+                  46
+                ],
+                "bg": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "children": [
+                  {
+                    "kind": "Text",
+                    "id": "rsLabel",
+                    "text": "Render Scale    100%",
+                    "fontSize": 14.5,
+                    "weight": 600,
+                    "align": 0,
+                    "fg": [
+                      0.933,
+                      0.945,
+                      0.965,
+                      1.0
+                    ],
+                    "anchor": "MidLeft",
+                    "off": [
+                      0,
+                      0
+                    ],
+                    "size": [
+                      400,
+                      26
+                    ],
+                    "bind": {
+                      "text": true
+                    }
+                  },
+                  {
+                    "kind": "Slider",
+                    "id": "rsSlider",
+                    "anchor": "MidRight",
+                    "off": [
+                      0,
+                      0
+                    ],
+                    "size": [
+                      380,
+                      28
+                    ],
+                    "bg": [
+                      0.173,
+                      0.188,
+                      0.227,
+                      1.0
+                    ],
+                    "fg": [
+                      0.91,
+                      0.698,
+                      0.29,
+                      1.0
+                    ],
+                    "bind": {
+                      "value": true
+                    },
+                    "min": 0.5,
+                    "max": 1.0,
+                    "value": 1.0
+                  }
+                ],
+                "id": "rsRow"
+              },
+              {
+                "kind": "Panel",
+                "anchor": "TopLeft",
+                "off": [
+                  0,
+                  0
+                ],
+                "size": [
+                  0,
+                  46
+                ],
+                "bg": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "children": [
+                  {
+                    "kind": "Text",
+                    "id": "dlssLabel",
+                    "text": "DLSS 4",
+                    "fontSize": 14.5,
+                    "weight": 600,
+                    "align": 0,
+                    "fg": [
+                      0.933,
+                      0.945,
+                      0.965,
+                      1.0
+                    ],
+                    "anchor": "MidLeft",
+                    "off": [
+                      0,
+                      0
+                    ],
+                    "size": [
+                      400,
+                      26
+                    ]
+                  },
+                  {
+                    "kind": "Stepper",
+                    "id": "dlssStepper",
+                    "anchor": "MidRight",
+                    "off": [
+                      0,
+                      0
+                    ],
+                    "size": [
+                      380,
+                      34
+                    ],
+                    "options": [
+                      "Off",
+                      "Quality",
+                      "Balanced",
+                      "Performance",
+                      "Ultra Perf"
+                    ],
+                    "optionIndex": 0,
+                    "fontSize": 14,
+                    "weight": 600,
+                    "bg": [
+                      0.086,
+                      0.098,
+                      0.125,
+                      0.94
+                    ],
+                    "fg": [
+                      0.91,
+                      0.698,
+                      0.29,
+                      1.0
+                    ],
+                    "radius": 6,
+                    "bind": {
+                      "value": true
+                    }
+                  }
+                ],
+                "id": "dlssRow"
+              },
+              {
+                "kind": "Panel",
+                "anchor": "TopLeft",
+                "off": [
+                  0,
+                  0
+                ],
+                "size": [
+                  0,
+                  46
+                ],
+                "bg": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "children": [
+                  {
+                    "kind": "Text",
+                    "id": "fgLabel",
+                    "text": "Frame Generation",
+                    "fontSize": 14.5,
+                    "weight": 600,
+                    "align": 0,
+                    "fg": [
+                      0.933,
+                      0.945,
+                      0.965,
+                      1.0
+                    ],
+                    "anchor": "MidLeft",
+                    "off": [
+                      0,
+                      0
+                    ],
+                    "size": [
+                      400,
+                      26
+                    ]
+                  },
+                  {
+                    "kind": "Stepper",
+                    "id": "fgStepper",
+                    "anchor": "MidRight",
+                    "off": [
+                      0,
+                      0
+                    ],
+                    "size": [
+                      380,
+                      34
+                    ],
+                    "options": [
+                      "Off",
+                      "x2",
+                      "x3",
+                      "x4"
+                    ],
+                    "optionIndex": 0,
+                    "fontSize": 14,
+                    "weight": 600,
+                    "bg": [
+                      0.086,
+                      0.098,
+                      0.125,
+                      0.94
+                    ],
+                    "fg": [
+                      0.91,
+                      0.698,
+                      0.29,
+                      1.0
+                    ],
+                    "radius": 6,
+                    "bind": {
+                      "value": true
+                    }
+                  }
+                ],
+                "id": "fgRow"
+              },
+              {
+                "kind": "Panel",
+                "anchor": "TopLeft",
+                "off": [
+                  0,
+                  0
+                ],
+                "size": [
+                  0,
+                  30
+                ],
+                "bg": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "children": [
+                  {
+                    "kind": "Text",
+                    "id": "dlssUnsupported",
+                    "text": "DLSS 4 \u2014 no compatible GPU detected",
+                    "fontSize": 13,
+                    "weight": 500,
+                    "align": 0,
+                    "fg": [
+                      0.471,
+                      0.502,
+                      0.557,
+                      1.0
+                    ],
+                    "anchor": "MidLeft",
+                    "off": [
+                      0,
+                      0
+                    ],
+                    "size": [
+                      828,
+                      24
+                    ],
+                    "visible": false,
+                    "bind": {
+                      "visible": true
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "Panel",
+                "anchor": "TopLeft",
+                "off": [
+                  0,
+                  0
+                ],
+                "size": [
+                  0,
+                  46
+                ],
+                "bg": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "children": [
+                  {
+                    "kind": "Toggle",
+                    "id": "vsToggle",
+                    "anchor": "MidLeft",
+                    "off": [
+                      0,
+                      0
+                    ],
+                    "stretchX": true,
+                    "size": [
+                      0,
+                      30
+                    ],
+                    "text": "V-Sync",
+                    "on": false,
+                    "fontSize": 14.5,
+                    "weight": 600,
+                    "bg": [
+                      0.173,
+                      0.188,
+                      0.227,
+                      1.0
+                    ],
+                    "fg": [
+                      0.91,
+                      0.698,
+                      0.29,
+                      1.0
+                    ],
+                    "bind": {
+                      "value": true
+                    }
+                  }
+                ],
+                "id": "vsRow"
+              },
+              {
+                "kind": "Panel",
+                "anchor": "TopLeft",
+                "off": [
+                  0,
+                  0
+                ],
+                "size": [
+                  0,
+                  30
+                ],
+                "bg": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "children": [
+                  {
+                    "kind": "Text",
+                    "id": "fpsLabel",
+                    "text": "Real FPS    \u2014",
+                    "fontSize": 13,
+                    "weight": 600,
+                    "align": 0,
+                    "fg": [
+                      0.69,
+                      0.722,
+                      0.776,
+                      1.0
+                    ],
+                    "anchor": "MidLeft",
+                    "off": [
+                      0,
+                      0
+                    ],
+                    "size": [
+                      828,
+                      24
+                    ],
+                    "bind": {
+                      "text": true
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

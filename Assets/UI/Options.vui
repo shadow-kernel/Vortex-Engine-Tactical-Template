@@ -60,7 +60,6 @@
             "text": "SETTINGS",
             "fontSize": 26,
             "weight": 800,
-            "align": 0,
             "fg": [
               0.933,
               0.945,
@@ -71,9 +70,9 @@
           {
             "kind": "Text",
             "id": "backHint",
-            "anchor": "TopLeft",
+            "anchor": "TopRight",
             "off": [
-              910,
+              -30,
               34
             ],
             "size": [
@@ -104,9 +103,9 @@
               2
             ],
             "bg": [
-              1.0,
-              1.0,
-              1.0,
+              1,
+              1,
+              1,
               0.09
             ]
           },
@@ -153,9 +152,9 @@
                   0
                 ],
                 "hoverTint": [
-                  1.0,
-                  1.0,
-                  1.0,
+                  1,
+                  1,
+                  1,
                   0.06
                 ],
                 "fg": [
@@ -163,7 +162,11 @@
                   0.722,
                   0.776,
                   1.0
-                ]
+                ],
+                "clickAction": "OnTabGeneral",
+                "bind": {
+                  "clicked": true
+                }
               },
               {
                 "kind": "Panel",
@@ -182,7 +185,11 @@
                   0.698,
                   0.29,
                   1.0
-                ]
+                ],
+                "visible": true,
+                "bind": {
+                  "visible": true
+                }
               },
               {
                 "kind": "Button",
@@ -207,9 +214,9 @@
                   0
                 ],
                 "hoverTint": [
-                  1.0,
-                  1.0,
-                  1.0,
+                  1,
+                  1,
+                  1,
                   0.06
                 ],
                 "fg": [
@@ -217,7 +224,11 @@
                   0.722,
                   0.776,
                   1.0
-                ]
+                ],
+                "clickAction": "OnTabGraphics",
+                "bind": {
+                  "clicked": true
+                }
               },
               {
                 "kind": "Panel",
@@ -236,7 +247,11 @@
                   0.698,
                   0.29,
                   1.0
-                ]
+                ],
+                "visible": false,
+                "bind": {
+                  "visible": true
+                }
               },
               {
                 "kind": "Button",
@@ -261,9 +276,9 @@
                   0
                 ],
                 "hoverTint": [
-                  1.0,
-                  1.0,
-                  1.0,
+                  1,
+                  1,
+                  1,
                   0.06
                 ],
                 "fg": [
@@ -271,7 +286,11 @@
                   0.722,
                   0.776,
                   1.0
-                ]
+                ],
+                "clickAction": "OnTabDisplay",
+                "bind": {
+                  "clicked": true
+                }
               },
               {
                 "kind": "Panel",
@@ -290,7 +309,11 @@
                   0.698,
                   0.29,
                   1.0
-                ]
+                ],
+                "visible": false,
+                "bind": {
+                  "visible": true
+                }
               },
               {
                 "kind": "Button",
@@ -315,9 +338,9 @@
                   0
                 ],
                 "hoverTint": [
-                  1.0,
-                  1.0,
-                  1.0,
+                  1,
+                  1,
+                  1,
                   0.06
                 ],
                 "fg": [
@@ -325,7 +348,11 @@
                   0.722,
                   0.776,
                   1.0
-                ]
+                ],
+                "clickAction": "OnTabAudio",
+                "bind": {
+                  "clicked": true
+                }
               },
               {
                 "kind": "Panel",
@@ -344,7 +371,11 @@
                   0.698,
                   0.29,
                   1.0
-                ]
+                ],
+                "visible": false,
+                "bind": {
+                  "visible": true
+                }
               },
               {
                 "kind": "Button",
@@ -369,9 +400,9 @@
                   0
                 ],
                 "hoverTint": [
-                  1.0,
-                  1.0,
-                  1.0,
+                  1,
+                  1,
+                  1,
                   0.06
                 ],
                 "fg": [
@@ -379,7 +410,11 @@
                   0.722,
                   0.776,
                   1.0
-                ]
+                ],
+                "clickAction": "OnTabControls",
+                "bind": {
+                  "clicked": true
+                }
               },
               {
                 "kind": "Panel",
@@ -398,1419 +433,21 @@
                   0.698,
                   0.29,
                   1.0
-                ]
-              }
-            ]
-          },
-          {
-            "kind": "Panel",
-            "id": "tabGeneral",
-            "anchor": "TopLeft",
-            "off": [
-              262,
-              102
-            ],
-            "size": [
-              828,
-              510
-            ],
-            "bg": [
-              0,
-              0,
-              0,
-              0
-            ],
-            "children": [
-              {
-                "kind": "Text",
-                "id": "fovLabel",
-                "anchor": "TopLeft",
-                "off": [
-                  0,
-                  6
                 ],
-                "size": [
-                  400,
-                  26
-                ],
-                "text": "Field of View    90",
-                "fontSize": 14.5,
-                "weight": 600,
-                "align": 0,
-                "fg": [
-                  0.933,
-                  0.945,
-                  0.965,
-                  1.0
-                ]
-              },
-              {
-                "kind": "Slider",
-                "id": "fovSlider",
-                "anchor": "TopLeft",
-                "off": [
-                  420,
-                  4
-                ],
-                "size": [
-                  408,
-                  28
-                ],
-                "min": 70,
-                "max": 120,
-                "value": 90,
-                "bg": [
-                  0.173,
-                  0.188,
-                  0.227,
-                  1.0
-                ],
-                "fg": [
-                  0.91,
-                  0.698,
-                  0.29,
-                  1.0
-                ]
-              },
-              {
-                "kind": "Text",
-                "id": "sensLabel",
-                "anchor": "TopLeft",
-                "off": [
-                  0,
-                  72
-                ],
-                "size": [
-                  400,
-                  26
-                ],
-                "text": "Mouse Sensitivity    0.09",
-                "fontSize": 14.5,
-                "weight": 600,
-                "align": 0,
-                "fg": [
-                  0.933,
-                  0.945,
-                  0.965,
-                  1.0
-                ]
-              },
-              {
-                "kind": "Slider",
-                "id": "sensSlider",
-                "anchor": "TopLeft",
-                "off": [
-                  420,
-                  70
-                ],
-                "size": [
-                  408,
-                  28
-                ],
-                "min": 0.02,
-                "max": 0.3,
-                "value": 0.09,
-                "bg": [
-                  0.173,
-                  0.188,
-                  0.227,
-                  1.0
-                ],
-                "fg": [
-                  0.91,
-                  0.698,
-                  0.29,
-                  1.0
-                ]
-              },
-              {
-                "kind": "Toggle",
-                "id": "adsToggle",
-                "anchor": "TopLeft",
-                "off": [
-                  0,
-                  136
-                ],
-                "size": [
-                  828,
-                  30
-                ],
-                "text": "Aim: Toggle (trackpad-friendly)",
-                "on": true,
-                "fontSize": 14.5,
-                "weight": 600,
-                "bg": [
-                  0.173,
-                  0.188,
-                  0.227,
-                  1.0
-                ],
-                "fg": [
-                  0.91,
-                  0.698,
-                  0.29,
-                  1.0
-                ]
-              },
-              {
-                "kind": "Text",
-                "id": "briLabel",
-                "anchor": "TopLeft",
-                "off": [
-                  0,
-                  194
-                ],
-                "size": [
-                  400,
-                  26
-                ],
-                "text": "Brightness    1.00",
-                "fontSize": 14.5,
-                "weight": 600,
-                "align": 0,
-                "fg": [
-                  0.933,
-                  0.945,
-                  0.965,
-                  1.0
-                ]
-              },
-              {
-                "kind": "Slider",
-                "id": "briSlider",
-                "anchor": "TopLeft",
-                "off": [
-                  420,
-                  192
-                ],
-                "size": [
-                  408,
-                  28
-                ],
-                "min": 0.5,
-                "max": 1.8,
-                "value": 1.0,
-                "bg": [
-                  0.173,
-                  0.188,
-                  0.227,
-                  1.0
-                ],
-                "fg": [
-                  0.91,
-                  0.698,
-                  0.29,
-                  1.0
-                ]
-              }
-            ]
-          },
-          {
-            "kind": "Panel",
-            "id": "tabGraphics",
-            "anchor": "TopLeft",
-            "off": [
-              262,
-              102
-            ],
-            "size": [
-              828,
-              510
-            ],
-            "bg": [
-              0,
-              0,
-              0,
-              0
-            ],
-            "children": [
-              {
-                "kind": "Text",
-                "id": "rsLabel",
-                "anchor": "TopLeft",
-                "off": [
-                  0,
-                  6
-                ],
-                "size": [
-                  400,
-                  26
-                ],
-                "text": "Render Scale    100%",
-                "fontSize": 14.5,
-                "weight": 600,
-                "align": 0,
-                "fg": [
-                  0.933,
-                  0.945,
-                  0.965,
-                  1.0
-                ]
-              },
-              {
-                "kind": "Slider",
-                "id": "rsSlider",
-                "anchor": "TopLeft",
-                "off": [
-                  420,
-                  4
-                ],
-                "size": [
-                  408,
-                  28
-                ],
-                "min": 0.5,
-                "max": 1.0,
-                "value": 1.0,
-                "bg": [
-                  0.173,
-                  0.188,
-                  0.227,
-                  1.0
-                ],
-                "fg": [
-                  0.91,
-                  0.698,
-                  0.29,
-                  1.0
-                ]
-              },
-              {
-                "kind": "Text",
-                "id": "dlssLabel",
-                "anchor": "TopLeft",
-                "off": [
-                  0,
-                  76
-                ],
-                "size": [
-                  400,
-                  26
-                ],
-                "text": "DLSS 4",
-                "fontSize": 14.5,
-                "weight": 600,
-                "align": 0,
-                "fg": [
-                  0.933,
-                  0.945,
-                  0.965,
-                  1.0
-                ]
-              },
-              {
-                "kind": "Stepper",
-                "id": "dlssStepper",
-                "anchor": "TopLeft",
-                "off": [
-                  420,
-                  70
-                ],
-                "size": [
-                  408,
-                  34
-                ],
-                "options": [
-                  "Off",
-                  "Quality",
-                  "Balanced",
-                  "Performance",
-                  "Ultra Perf"
-                ],
-                "optionIndex": 0,
-                "fontSize": 14,
-                "weight": 600,
-                "bg": [
-                  0.086,
-                  0.098,
-                  0.125,
-                  0.94
-                ],
-                "fg": [
-                  0.91,
-                  0.698,
-                  0.29,
-                  1.0
-                ],
-                "radius": 6
-              },
-              {
-                "kind": "Text",
-                "id": "fgLabel",
-                "anchor": "TopLeft",
-                "off": [
-                  0,
-                  132
-                ],
-                "size": [
-                  400,
-                  26
-                ],
-                "text": "Frame Generation",
-                "fontSize": 14.5,
-                "weight": 600,
-                "align": 0,
-                "fg": [
-                  0.933,
-                  0.945,
-                  0.965,
-                  1.0
-                ]
-              },
-              {
-                "kind": "Stepper",
-                "id": "fgStepper",
-                "anchor": "TopLeft",
-                "off": [
-                  420,
-                  126
-                ],
-                "size": [
-                  408,
-                  34
-                ],
-                "options": [
-                  "Off",
-                  "x2",
-                  "x3",
-                  "x4"
-                ],
-                "optionIndex": 0,
-                "fontSize": 14,
-                "weight": 600,
-                "bg": [
-                  0.086,
-                  0.098,
-                  0.125,
-                  0.94
-                ],
-                "fg": [
-                  0.91,
-                  0.698,
-                  0.29,
-                  1.0
-                ],
-                "radius": 6
-              },
-              {
-                "kind": "Text",
-                "id": "dlssUnsupported",
-                "anchor": "TopLeft",
-                "off": [
-                  0,
-                  72
-                ],
-                "size": [
-                  828,
-                  24
-                ],
-                "text": "DLSS 4 \u2014 no compatible GPU detected",
-                "fontSize": 13,
-                "weight": 500,
-                "align": 0,
-                "fg": [
-                  0.471,
-                  0.502,
-                  0.557,
-                  1.0
-                ]
-              },
-              {
-                "kind": "Toggle",
-                "id": "vsToggle",
-                "anchor": "TopLeft",
-                "off": [
-                  0,
-                  182
-                ],
-                "size": [
-                  828,
-                  30
-                ],
-                "text": "V-Sync",
-                "on": false,
-                "fontSize": 14.5,
-                "weight": 600,
-                "bg": [
-                  0.173,
-                  0.188,
-                  0.227,
-                  1.0
-                ],
-                "fg": [
-                  0.91,
-                  0.698,
-                  0.29,
-                  1.0
-                ]
-              },
-              {
-                "kind": "Text",
-                "id": "fpsLabel",
-                "anchor": "TopLeft",
-                "off": [
-                  0,
-                  246
-                ],
-                "size": [
-                  828,
-                  24
-                ],
-                "text": "Real FPS    \u2014",
-                "fontSize": 13,
-                "weight": 600,
-                "align": 0,
-                "fg": [
-                  0.69,
-                  0.722,
-                  0.776,
-                  1.0
-                ]
-              }
-            ]
-          },
-          {
-            "kind": "Panel",
-            "id": "tabDisplay",
-            "anchor": "TopLeft",
-            "off": [
-              262,
-              102
-            ],
-            "size": [
-              828,
-              510
-            ],
-            "bg": [
-              0,
-              0,
-              0,
-              0
-            ],
-            "children": [
-              {
-                "kind": "Text",
-                "id": "resLabel",
-                "anchor": "TopLeft",
-                "off": [
-                  0,
-                  10
-                ],
-                "size": [
-                  400,
-                  26
-                ],
-                "text": "Resolution",
-                "fontSize": 14.5,
-                "weight": 600,
-                "align": 0,
-                "fg": [
-                  0.933,
-                  0.945,
-                  0.965,
-                  1.0
-                ]
-              },
-              {
-                "kind": "Stepper",
-                "id": "resStepper",
-                "anchor": "TopLeft",
-                "off": [
-                  420,
-                  4
-                ],
-                "size": [
-                  408,
-                  34
-                ],
-                "options": [
-                  "1280 x 720",
-                  "1600 x 900",
-                  "1920 x 1080",
-                  "2560 x 1440"
-                ],
-                "optionIndex": 2,
-                "fontSize": 14,
-                "weight": 600,
-                "bg": [
-                  0.086,
-                  0.098,
-                  0.125,
-                  0.94
-                ],
-                "fg": [
-                  0.91,
-                  0.698,
-                  0.29,
-                  1.0
-                ],
-                "radius": 6
-              },
-              {
-                "kind": "Toggle",
-                "id": "fsToggle",
-                "anchor": "TopLeft",
-                "off": [
-                  0,
-                  60
-                ],
-                "size": [
-                  828,
-                  30
-                ],
-                "text": "Fullscreen",
-                "on": false,
-                "fontSize": 14.5,
-                "weight": 600,
-                "bg": [
-                  0.173,
-                  0.188,
-                  0.227,
-                  1.0
-                ],
-                "fg": [
-                  0.91,
-                  0.698,
-                  0.29,
-                  1.0
-                ]
-              },
-              {
-                "kind": "Toggle",
-                "id": "vs2Toggle",
-                "anchor": "TopLeft",
-                "off": [
-                  0,
-                  116
-                ],
-                "size": [
-                  828,
-                  30
-                ],
-                "text": "V-Sync",
-                "on": false,
-                "fontSize": 14.5,
-                "weight": 600,
-                "bg": [
-                  0.173,
-                  0.188,
-                  0.227,
-                  1.0
-                ],
-                "fg": [
-                  0.91,
-                  0.698,
-                  0.29,
-                  1.0
-                ]
-              }
-            ]
-          },
-          {
-            "kind": "Panel",
-            "id": "tabAudio",
-            "anchor": "TopLeft",
-            "off": [
-              262,
-              102
-            ],
-            "size": [
-              828,
-              510
-            ],
-            "bg": [
-              0,
-              0,
-              0,
-              0
-            ],
-            "children": [
-              {
-                "kind": "Text",
-                "id": "mvLabel",
-                "anchor": "TopLeft",
-                "off": [
-                  0,
-                  6
-                ],
-                "size": [
-                  400,
-                  26
-                ],
-                "text": "Master Volume    90%",
-                "fontSize": 14.5,
-                "weight": 600,
-                "align": 0,
-                "fg": [
-                  0.933,
-                  0.945,
-                  0.965,
-                  1.0
-                ]
-              },
-              {
-                "kind": "Slider",
-                "id": "mvSlider",
-                "anchor": "TopLeft",
-                "off": [
-                  420,
-                  4
-                ],
-                "size": [
-                  408,
-                  28
-                ],
-                "min": 0,
-                "max": 1,
-                "value": 0.9,
-                "bg": [
-                  0.173,
-                  0.188,
-                  0.227,
-                  1.0
-                ],
-                "fg": [
-                  0.91,
-                  0.698,
-                  0.29,
-                  1.0
-                ]
-              },
-              {
-                "kind": "Text",
-                "id": "sfxLabel",
-                "anchor": "TopLeft",
-                "off": [
-                  0,
-                  72
-                ],
-                "size": [
-                  400,
-                  26
-                ],
-                "text": "Effects Volume    100%",
-                "fontSize": 14.5,
-                "weight": 600,
-                "align": 0,
-                "fg": [
-                  0.933,
-                  0.945,
-                  0.965,
-                  1.0
-                ]
-              },
-              {
-                "kind": "Slider",
-                "id": "sfxSlider",
-                "anchor": "TopLeft",
-                "off": [
-                  420,
-                  70
-                ],
-                "size": [
-                  408,
-                  28
-                ],
-                "min": 0,
-                "max": 1,
-                "value": 1.0,
-                "bg": [
-                  0.173,
-                  0.188,
-                  0.227,
-                  1.0
-                ],
-                "fg": [
-                  0.91,
-                  0.698,
-                  0.29,
-                  1.0
-                ]
-              },
-              {
-                "kind": "Text",
-                "id": "musLabel",
-                "anchor": "TopLeft",
-                "off": [
-                  0,
-                  138
-                ],
-                "size": [
-                  400,
-                  26
-                ],
-                "text": "Music Volume    80%",
-                "fontSize": 14.5,
-                "weight": 600,
-                "align": 0,
-                "fg": [
-                  0.933,
-                  0.945,
-                  0.965,
-                  1.0
-                ]
-              },
-              {
-                "kind": "Slider",
-                "id": "musSlider",
-                "anchor": "TopLeft",
-                "off": [
-                  420,
-                  136
-                ],
-                "size": [
-                  408,
-                  28
-                ],
-                "min": 0,
-                "max": 1,
-                "value": 0.8,
-                "bg": [
-                  0.173,
-                  0.188,
-                  0.227,
-                  1.0
-                ],
-                "fg": [
-                  0.91,
-                  0.698,
-                  0.29,
-                  1.0
-                ]
-              }
-            ]
-          },
-          {
-            "kind": "Panel",
-            "id": "tabControls",
-            "anchor": "TopLeft",
-            "off": [
-              262,
-              102
-            ],
-            "size": [
-              828,
-              510
-            ],
-            "bg": [
-              0,
-              0,
-              0,
-              0
-            ],
-            "children": [
-              {
-                "kind": "Text",
-                "id": "sens2Label",
-                "anchor": "TopLeft",
-                "off": [
-                  0,
-                  6
-                ],
-                "size": [
-                  400,
-                  26
-                ],
-                "text": "Mouse Sensitivity    0.09",
-                "fontSize": 14.5,
-                "weight": 600,
-                "align": 0,
-                "fg": [
-                  0.933,
-                  0.945,
-                  0.965,
-                  1.0
-                ]
-              },
-              {
-                "kind": "Slider",
-                "id": "sens2Slider",
-                "anchor": "TopLeft",
-                "off": [
-                  420,
-                  4
-                ],
-                "size": [
-                  408,
-                  28
-                ],
-                "min": 0.02,
-                "max": 0.3,
-                "value": 0.09,
-                "bg": [
-                  0.173,
-                  0.188,
-                  0.227,
-                  1.0
-                ],
-                "fg": [
-                  0.91,
-                  0.698,
-                  0.29,
-                  1.0
-                ]
-              },
-              {
-                "kind": "Text",
-                "id": "bind0a",
-                "anchor": "TopLeft",
-                "off": [
-                  0,
-                  76
-                ],
-                "size": [
-                  414.0,
-                  22
-                ],
-                "text": "Move",
-                "fontSize": 14,
-                "weight": 600,
-                "align": 0,
-                "fg": [
-                  0.69,
-                  0.722,
-                  0.776,
-                  1.0
-                ]
-              },
-              {
-                "kind": "Text",
-                "id": "bind0b",
-                "anchor": "TopLeft",
-                "off": [
-                  414.0,
-                  76
-                ],
-                "size": [
-                  414.0,
-                  22
-                ],
-                "text": "W A S D",
-                "fontSize": 14,
-                "weight": 600,
-                "align": 2,
-                "fg": [
-                  0.933,
-                  0.945,
-                  0.965,
-                  1.0
-                ]
-              },
-              {
-                "kind": "Text",
-                "id": "bind1a",
-                "anchor": "TopLeft",
-                "off": [
-                  0,
-                  106
-                ],
-                "size": [
-                  414.0,
-                  22
-                ],
-                "text": "Sprint",
-                "fontSize": 14,
-                "weight": 600,
-                "align": 0,
-                "fg": [
-                  0.69,
-                  0.722,
-                  0.776,
-                  1.0
-                ]
-              },
-              {
-                "kind": "Text",
-                "id": "bind1b",
-                "anchor": "TopLeft",
-                "off": [
-                  414.0,
-                  106
-                ],
-                "size": [
-                  414.0,
-                  22
-                ],
-                "text": "Shift  \u00b7  W W = tac",
-                "fontSize": 14,
-                "weight": 600,
-                "align": 2,
-                "fg": [
-                  0.933,
-                  0.945,
-                  0.965,
-                  1.0
-                ]
-              },
-              {
-                "kind": "Text",
-                "id": "bind2a",
-                "anchor": "TopLeft",
-                "off": [
-                  0,
-                  136
-                ],
-                "size": [
-                  414.0,
-                  22
-                ],
-                "text": "Crouch / Slide",
-                "fontSize": 14,
-                "weight": 600,
-                "align": 0,
-                "fg": [
-                  0.69,
-                  0.722,
-                  0.776,
-                  1.0
-                ]
-              },
-              {
-                "kind": "Text",
-                "id": "bind2b",
-                "anchor": "TopLeft",
-                "off": [
-                  414.0,
-                  136
-                ],
-                "size": [
-                  414.0,
-                  22
-                ],
-                "text": "Ctrl / C",
-                "fontSize": 14,
-                "weight": 600,
-                "align": 2,
-                "fg": [
-                  0.933,
-                  0.945,
-                  0.965,
-                  1.0
-                ]
-              },
-              {
-                "kind": "Text",
-                "id": "bind3a",
-                "anchor": "TopLeft",
-                "off": [
-                  0,
-                  166
-                ],
-                "size": [
-                  414.0,
-                  22
-                ],
-                "text": "Jump",
-                "fontSize": 14,
-                "weight": 600,
-                "align": 0,
-                "fg": [
-                  0.69,
-                  0.722,
-                  0.776,
-                  1.0
-                ]
-              },
-              {
-                "kind": "Text",
-                "id": "bind3b",
-                "anchor": "TopLeft",
-                "off": [
-                  414.0,
-                  166
-                ],
-                "size": [
-                  414.0,
-                  22
-                ],
-                "text": "Space",
-                "fontSize": 14,
-                "weight": 600,
-                "align": 2,
-                "fg": [
-                  0.933,
-                  0.945,
-                  0.965,
-                  1.0
-                ]
-              },
-              {
-                "kind": "Text",
-                "id": "bind4a",
-                "anchor": "TopLeft",
-                "off": [
-                  0,
-                  196
-                ],
-                "size": [
-                  414.0,
-                  22
-                ],
-                "text": "Fire",
-                "fontSize": 14,
-                "weight": 600,
-                "align": 0,
-                "fg": [
-                  0.69,
-                  0.722,
-                  0.776,
-                  1.0
-                ]
-              },
-              {
-                "kind": "Text",
-                "id": "bind4b",
-                "anchor": "TopLeft",
-                "off": [
-                  414.0,
-                  196
-                ],
-                "size": [
-                  414.0,
-                  22
-                ],
-                "text": "LMB",
-                "fontSize": 14,
-                "weight": 600,
-                "align": 2,
-                "fg": [
-                  0.933,
-                  0.945,
-                  0.965,
-                  1.0
-                ]
-              },
-              {
-                "kind": "Text",
-                "id": "bind5a",
-                "anchor": "TopLeft",
-                "off": [
-                  0,
-                  226
-                ],
-                "size": [
-                  414.0,
-                  22
-                ],
-                "text": "Aim (ADS)",
-                "fontSize": 14,
-                "weight": 600,
-                "align": 0,
-                "fg": [
-                  0.69,
-                  0.722,
-                  0.776,
-                  1.0
-                ]
-              },
-              {
-                "kind": "Text",
-                "id": "bind5b",
-                "anchor": "TopLeft",
-                "off": [
-                  414.0,
-                  226
-                ],
-                "size": [
-                  414.0,
-                  22
-                ],
-                "text": "RMB",
-                "fontSize": 14,
-                "weight": 600,
-                "align": 2,
-                "fg": [
-                  0.933,
-                  0.945,
-                  0.965,
-                  1.0
-                ]
-              },
-              {
-                "kind": "Text",
-                "id": "bind6a",
-                "anchor": "TopLeft",
-                "off": [
-                  0,
-                  256
-                ],
-                "size": [
-                  414.0,
-                  22
-                ],
-                "text": "Reload",
-                "fontSize": 14,
-                "weight": 600,
-                "align": 0,
-                "fg": [
-                  0.69,
-                  0.722,
-                  0.776,
-                  1.0
-                ]
-              },
-              {
-                "kind": "Text",
-                "id": "bind6b",
-                "anchor": "TopLeft",
-                "off": [
-                  414.0,
-                  256
-                ],
-                "size": [
-                  414.0,
-                  22
-                ],
-                "text": "R",
-                "fontSize": 14,
-                "weight": 600,
-                "align": 2,
-                "fg": [
-                  0.933,
-                  0.945,
-                  0.965,
-                  1.0
-                ]
-              },
-              {
-                "kind": "Text",
-                "id": "bind7a",
-                "anchor": "TopLeft",
-                "off": [
-                  0,
-                  286
-                ],
-                "size": [
-                  414.0,
-                  22
-                ],
-                "text": "Fire Mode",
-                "fontSize": 14,
-                "weight": 600,
-                "align": 0,
-                "fg": [
-                  0.69,
-                  0.722,
-                  0.776,
-                  1.0
-                ]
-              },
-              {
-                "kind": "Text",
-                "id": "bind7b",
-                "anchor": "TopLeft",
-                "off": [
-                  414.0,
-                  286
-                ],
-                "size": [
-                  414.0,
-                  22
-                ],
-                "text": "B",
-                "fontSize": 14,
-                "weight": 600,
-                "align": 2,
-                "fg": [
-                  0.933,
-                  0.945,
-                  0.965,
-                  1.0
-                ]
-              },
-              {
-                "kind": "Text",
-                "id": "bind8a",
-                "anchor": "TopLeft",
-                "off": [
-                  0,
-                  316
-                ],
-                "size": [
-                  414.0,
-                  22
-                ],
-                "text": "Inspect",
-                "fontSize": 14,
-                "weight": 600,
-                "align": 0,
-                "fg": [
-                  0.69,
-                  0.722,
-                  0.776,
-                  1.0
-                ]
-              },
-              {
-                "kind": "Text",
-                "id": "bind8b",
-                "anchor": "TopLeft",
-                "off": [
-                  414.0,
-                  316
-                ],
-                "size": [
-                  414.0,
-                  22
-                ],
-                "text": "I",
-                "fontSize": 14,
-                "weight": 600,
-                "align": 2,
-                "fg": [
-                  0.933,
-                  0.945,
-                  0.965,
-                  1.0
-                ]
-              },
-              {
-                "kind": "Text",
-                "id": "bind9a",
-                "anchor": "TopLeft",
-                "off": [
-                  0,
-                  346
-                ],
-                "size": [
-                  414.0,
-                  22
-                ],
-                "text": "Switch Weapon",
-                "fontSize": 14,
-                "weight": 600,
-                "align": 0,
-                "fg": [
-                  0.69,
-                  0.722,
-                  0.776,
-                  1.0
-                ]
-              },
-              {
-                "kind": "Text",
-                "id": "bind9b",
-                "anchor": "TopLeft",
-                "off": [
-                  414.0,
-                  346
-                ],
-                "size": [
-                  414.0,
-                  22
-                ],
-                "text": "1 / 2",
-                "fontSize": 14,
-                "weight": 600,
-                "align": 2,
-                "fg": [
-                  0.933,
-                  0.945,
-                  0.965,
-                  1.0
-                ]
-              },
-              {
-                "kind": "Text",
-                "id": "bind10a",
-                "anchor": "TopLeft",
-                "off": [
-                  0,
-                  376
-                ],
-                "size": [
-                  414.0,
-                  22
-                ],
-                "text": "Interact",
-                "fontSize": 14,
-                "weight": 600,
-                "align": 0,
-                "fg": [
-                  0.69,
-                  0.722,
-                  0.776,
-                  1.0
-                ]
-              },
-              {
-                "kind": "Text",
-                "id": "bind10b",
-                "anchor": "TopLeft",
-                "off": [
-                  414.0,
-                  376
-                ],
-                "size": [
-                  414.0,
-                  22
-                ],
-                "text": "E",
-                "fontSize": 14,
-                "weight": 600,
-                "align": 2,
-                "fg": [
-                  0.933,
-                  0.945,
-                  0.965,
-                  1.0
-                ]
-              },
-              {
-                "kind": "Text",
-                "id": "bind11a",
-                "anchor": "TopLeft",
-                "off": [
-                  0,
-                  406
-                ],
-                "size": [
-                  414.0,
-                  22
-                ],
-                "text": "Menu",
-                "fontSize": 14,
-                "weight": 600,
-                "align": 0,
-                "fg": [
-                  0.69,
-                  0.722,
-                  0.776,
-                  1.0
-                ]
-              },
-              {
-                "kind": "Text",
-                "id": "bind11b",
-                "anchor": "TopLeft",
-                "off": [
-                  414.0,
-                  406
-                ],
-                "size": [
-                  414.0,
-                  22
-                ],
-                "text": "ESC",
-                "fontSize": 14,
-                "weight": 600,
-                "align": 2,
-                "fg": [
-                  0.933,
-                  0.945,
-                  0.965,
-                  1.0
-                ]
+                "visible": false,
+                "bind": {
+                  "visible": true
+                }
               }
             ]
           },
           {
             "kind": "Button",
             "id": "backButton",
-            "anchor": "TopLeft",
+            "anchor": "BottomLeft",
             "off": [
               30,
-              628
+              -14
             ],
             "size": [
               150,
@@ -1837,7 +474,11 @@
               0.945,
               0.965,
               1.0
-            ]
+            ],
+            "clickAction": "OnOptionsBack",
+            "bind": {
+              "clicked": true
+            }
           }
         ]
       }

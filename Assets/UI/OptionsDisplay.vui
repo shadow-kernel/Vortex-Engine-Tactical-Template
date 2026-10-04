@@ -1,0 +1,264 @@
+{
+  "vui": 1,
+  "designW": 1920,
+  "designH": 1080,
+  "root": {
+    "kind": "Panel",
+    "id": "displayRoot",
+    "anchor": "TopLeft",
+    "stretchX": true,
+    "stretchY": true,
+    "off": [
+      0,
+      0
+    ],
+    "size": [
+      0,
+      0
+    ],
+    "bg": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "blocksInput": false,
+    "children": [
+      {
+        "kind": "Panel",
+        "id": "displayArea",
+        "anchor": "Center",
+        "off": [
+          116,
+          17
+        ],
+        "size": [
+          828,
+          510
+        ],
+        "bg": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "children": [
+          {
+            "kind": "Panel",
+            "id": "displayRows",
+            "anchor": "TopLeft",
+            "off": [
+              0,
+              0
+            ],
+            "size": [
+              828,
+              510
+            ],
+            "bg": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "layout": "Vertical",
+            "spacing": 10,
+            "padding": 0,
+            "children": [
+              {
+                "kind": "Panel",
+                "anchor": "TopLeft",
+                "off": [
+                  0,
+                  0
+                ],
+                "size": [
+                  0,
+                  46
+                ],
+                "bg": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "children": [
+                  {
+                    "kind": "Text",
+                    "id": "resLabel",
+                    "text": "Resolution",
+                    "fontSize": 14.5,
+                    "weight": 600,
+                    "align": 0,
+                    "fg": [
+                      0.933,
+                      0.945,
+                      0.965,
+                      1.0
+                    ],
+                    "anchor": "MidLeft",
+                    "off": [
+                      0,
+                      0
+                    ],
+                    "size": [
+                      400,
+                      26
+                    ]
+                  },
+                  {
+                    "kind": "Stepper",
+                    "id": "resStepper",
+                    "anchor": "MidRight",
+                    "off": [
+                      0,
+                      0
+                    ],
+                    "size": [
+                      380,
+                      34
+                    ],
+                    "options": [
+                      "1280 x 720",
+                      "1600 x 900",
+                      "1920 x 1080",
+                      "2560 x 1440"
+                    ],
+                    "optionIndex": 2,
+                    "fontSize": 14,
+                    "weight": 600,
+                    "bg": [
+                      0.086,
+                      0.098,
+                      0.125,
+                      0.94
+                    ],
+                    "fg": [
+                      0.91,
+                      0.698,
+                      0.29,
+                      1.0
+                    ],
+                    "radius": 6,
+                    "bind": {
+                      "value": true
+                    }
+                  }
+                ],
+                "id": "resRow"
+              },
+              {
+                "kind": "Panel",
+                "anchor": "TopLeft",
+                "off": [
+                  0,
+                  0
+                ],
+                "size": [
+                  0,
+                  46
+                ],
+                "bg": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "children": [
+                  {
+                    "kind": "Toggle",
+                    "id": "fsToggle",
+                    "anchor": "MidLeft",
+                    "off": [
+                      0,
+                      0
+                    ],
+                    "stretchX": true,
+                    "size": [
+                      0,
+                      30
+                    ],
+                    "text": "Fullscreen",
+                    "on": false,
+                    "fontSize": 14.5,
+                    "weight": 600,
+                    "bg": [
+                      0.173,
+                      0.188,
+                      0.227,
+                      1.0
+                    ],
+                    "fg": [
+                      0.91,
+                      0.698,
+                      0.29,
+                      1.0
+                    ],
+                    "bind": {
+                      "value": true
+                    }
+                  }
+                ],
+                "id": "fsRow"
+              },
+              {
+                "kind": "Panel",
+                "anchor": "TopLeft",
+                "off": [
+                  0,
+                  0
+                ],
+                "size": [
+                  0,
+                  46
+                ],
+                "bg": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "children": [
+                  {
+                    "kind": "Toggle",
+                    "id": "vs2Toggle",
+                    "anchor": "MidLeft",
+                    "off": [
+                      0,
+                      0
+                    ],
+                    "stretchX": true,
+                    "size": [
+                      0,
+                      30
+                    ],
+                    "text": "V-Sync",
+                    "on": false,
+                    "fontSize": 14.5,
+                    "weight": 600,
+                    "bg": [
+                      0.173,
+                      0.188,
+                      0.227,
+                      1.0
+                    ],
+                    "fg": [
+                      0.91,
+                      0.698,
+                      0.29,
+                      1.0
+                    ],
+                    "bind": {
+                      "value": true
+                    }
+                  }
+                ],
+                "id": "vs2Row"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

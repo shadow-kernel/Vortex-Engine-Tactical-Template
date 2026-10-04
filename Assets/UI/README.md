@@ -1,28 +1,49 @@
 # UI
 
-The menus of this template are **engine UI assets** (`.vui`). Open them in the editor —
-**Window ▸ UI Editor**, or double-click the file in the Project panel — and change the layout, colours,
-wording or the widget ranges without touching a line of C#.
+Every menu in this template is an **engine UI asset** (`.vui`). Open one in the editor — **Window ▸ UI Editor**,
+or double-click it in the Project panel — and change the layout, colours, wording or a widget's range without
+touching C#.
 
 | File | What it is |
 |---|---|
-| `PauseMenu.vui` | The ESC pause menu: title, RESUME / OPTIONS / QUIT GAME, hint line. |
-| `Options.vui` | The settings screen: tab rail (General · Graphics · Display · Audio · Controls) and every slider, toggle and stepper behind it. |
+| `PauseMenu.vui` | The ESC pause screen: title, RESUME / OPTIONS / QUIT GAME, hint line. |
+| `Options.vui` | The settings **frame** only: title, the tab rail, BACK. No tab content. |
+| `OptionsGeneral.vui` | The General tab's rows (FOV, sensitivity, aim toggle, brightness). |
+| `OptionsGraphics.vui` | Render scale, DLSS, frame generation, V-Sync, FPS readout. |
+| `OptionsDisplay.vui` | Resolution, fullscreen, V-Sync. |
+| `OptionsAudio.vui` | Master / effects / music volume. |
+| `OptionsControls.vui` | Sensitivity and the key-binding list. |
 
-`Assets/Scripts/UI/EscMenu.cs` only **wires** these screens up: it shows and hides them, reads the widgets by
-their id and applies the values to `UserSettings` and the engine. It draws nothing itself, so anything you can
-express in the UI editor lands in the game as-is.
+**One screen per file, on purpose.** The settings frame and the tab you are on are shown *together* — the
+engine's UI stack can have several screens up at once, routes input top-first and renders bottom-to-top. The
+tab screens are therefore non-blocking (`blocksInput: false`) so clicks fall through to the rail underneath,
+and the frame blocks input so the game below never sees them. Keeping the five tabs in one file would stack
+them on top of each other in the editor, which is exactly what you do not want to edit.
+
+## How a button reaches the code
+
+A button names a method in its **Click action** field. The engine routes it to the class named after the
+screen — `PauseMenu.vui` → `PauseMenuActions`, `Options.vui` → `OptionsActions` — and calls the paramless
+method of that name. That is the whole wiring; nothing repeats the id in code.
+
+| Screen | Actions class | Methods |
+|---|---|---|
+| `PauseMenu.vui` | `PauseMenuActions` | `OnResume`, `OnOptions`, `OnQuitGame` |
+| `Options.vui` | `OptionsActions` | `OnTabGeneral` … `OnTabControls`, `OnOptionsBack` |
+
+`EscMenu.cs` owns the state (which screen, which tab) and the value plumbing: it reads the sliders, toggles and
+steppers by id and applies them to `UserSettings` and the engine. It draws nothing.
 
 ## Changing something
 
 * **Move or restyle a control** — edit the `.vui` in the UI editor. Nothing else to do.
-* **Change a slider's range** — edit its `min`/`max` there; the script reads whatever the widget reports.
-* **Add a new setting** — add the widget in the UI editor, give it a stable `id`, then read it in
-  `EscMenu.TickOptions()` with `GetSlider(id)` / `GetToggle(id)` / `GetStep(id)` and apply it in `ApplyAll()`.
-* **Rename a control** — keep the `id`; that is what the script looks up. The visible text is `text`.
-
-The ids follow the widget they belong to: `fovSlider` + `fovLabel`, `vsToggle`, `resStepper`, `tab2Button`,
-`tabDisplay` (the panel that tab shows), `tab2Marker` (the accent bar next to the active tab).
+* **Change a slider's range** — edit its `min`/`max`; the script reads whatever the widget reports.
+* **Add a row to a tab** — add it to that tab's file. The rows sit in a vertical layout container, so the ones
+  below move down by themselves. Give the widget a stable `id`, then read it in `EscMenu.ReadSettings()` with
+  `GetSlider` / `GetToggle` / `GetStep` and apply it in `ApplyAll()`.
+* **Add a whole tab** — a new `Options<Name>.vui` + a rail button whose Click action is a new
+  `OnTab<Name>` in `OptionsActions`, then extend `TabScreens` in `EscMenu.cs`.
+* **Rename a control** — keep the `id`; that is what the script looks up. The visible label is `text`.
 
 ## Why the HUD is not a `.vui`
 

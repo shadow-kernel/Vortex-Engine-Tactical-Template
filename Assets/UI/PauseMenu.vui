@@ -104,7 +104,12 @@
           0.945,
           0.965,
           1.0
-        ]
+        ],
+        "clickAction": "OnResume",
+        "bind": {
+          "clicked": true
+        },
+        "tooltip": "Back to the game (ESC)"
       },
       {
         "kind": "Button",
@@ -139,7 +144,11 @@
           0.945,
           0.965,
           1.0
-        ]
+        ],
+        "clickAction": "OnOptions",
+        "bind": {
+          "clicked": true
+        }
       },
       {
         "kind": "Button",
@@ -174,7 +183,11 @@
           0.945,
           0.965,
           1.0
-        ]
+        ],
+        "clickAction": "OnQuitGame",
+        "bind": {
+          "clicked": true
+        }
       },
       {
         "kind": "Text",
