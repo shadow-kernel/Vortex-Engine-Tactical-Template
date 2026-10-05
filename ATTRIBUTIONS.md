@@ -24,6 +24,24 @@ converted to the glTF metre space; the UZI's per-axis vertex distortion from the
 content was mirrored on X for the engine's left-handed space; degenerate triangles were removed; textures were
 re-encoded at 2K; every animation was extracted to `.vanim` clips, resampled to 60 fps and keyframe-reduced.
 
+**S.W.A.T. Operator- 4k Followers Special Remaster** — `Assets/Characters/Operator` (the player's third-person body)
+- Model: **Mateusz Woliński** (SpatialNeglect, <https://sketchfab.com/jeandiz>) —
+  <https://sketchfab.com/3d-models/swat-operator-4k-followers-special-remaster-f6923917c8014578b1c1cb2b4c249268>, CC-BY 4.0
+- Built by the author from assets shared under CC-BY: Gloves by **bobeer**, NVGs by **VassKacsoHunor**, Helmet by
+  **Simon Coenen**, Soldier Uniform by **Bzovius**, Boots by **Albin**, Balaclava by **Shedmon**.
+- Credit line: *This work is based on "S.W.A.T. Operator- 4k Followers Special Remaster"
+  (https://sketchfab.com/3d-models/swat-operator-4k-followers-special-remaster-f6923917c8014578b1c1cb2b4c249268) by
+  Mateusz Woliński (https://sketchfab.com/jeandiz) licensed under CC-BY-4.0.*
+- Modifications: the KRISS Vector the model held was removed (the game puts its own weapons in the hands), the
+  joint names were cleaned (`mixamorig:Hips_63` → `mixamorig:Hips`), the content was mirrored on X for the engine's
+  left-handed space, and the textures were re-encoded at 2K.
+
+**Third-person weapons** (`Assets/Weapons/*/*_tp.gltf`) are the guns of the two first-person packs above, posed at the
+pack's rest pose and written as static meshes — same credit and licence as their packs.
+
+**Rifle locomotion clips** (`Assets/Characters/Operator/animations`) are Mixamo animations (Adobe), the same set the
+Horror Starter template uses, converted to the operator's rig (rotations only, Spine2 folded into Spine1, mirrored).
+
 **Gunshot recordings** (`Assets/Audio/rifle_shot_*.wav`, `pistol_shot_*.wav`, `bolt_rifle_shot_*.wav`)
 - "Gunshot Sounds" by **Vincent Sevedge** (OpenGameArt, <https://opengameart.org/content/gunshot-sounds>),
   CC-BY 3.0 (<https://creativecommons.org/licenses/by/3.0/>) — cut into single shots, high-passed, normalized.

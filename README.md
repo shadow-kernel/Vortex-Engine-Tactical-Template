@@ -77,6 +77,26 @@ Every number is a public field — tune it in the inspector while playing.
 Targets (`Assets/Scripts/Range/TargetBoard.cs`) fall when shot down and spring back up; steel rings and swings.
 The HUD (`UI/HudManager.cs`) counts hits, accuracy and knock-downs. Light props are rigid bodies — shoot them.
 
+## 🧍 The third-person body
+
+The player has a full body: a tactical operator (helmet, NVGs, plate carrier) with the equipped weapon in his hands.
+Other cameras see it: press **P** for the debug camera and look at yourself, a mirror, a spectator, and later other
+players or bots. The local first-person camera never draws it (its meshes are on render layer 2, *third person only*).
+
+`Assets/Scripts/Player/ThirdPersonBody.cs` drives it from the same `PlayerRig` state the first-person side uses:
+
+| | |
+|---|---|
+| **Locomotion** | idle / aim, walk, run, strafe, backwards, sprint, jump — crossfaded Mixamo rifle clips |
+| **Stance** | crouch lowers the body and **Foot IK** keeps the feet on the ground (the knees bend); a slide lowers it further and leans back |
+| **Look** | the body turns with the view, the spine bends with the look pitch |
+| **Weapon** | a third-person copy of the equipped gun (`TP_UZI`, `TP_Scorpion`) sits in the right hand; the left hand is IK'd onto the foregrip exactly where the first-person left hand holds it |
+| **Overlays** | every shot plays a recoil overlay on the upper body; a reload plays the reload clip and the support hand lets go |
+| **Death** | at zero health the body turns into a **ragdoll** |
+
+To use another character: any Mixamo-rigged model works with the clips. Swap the meshes under `PlayerBody` and keep
+the component setup.
+
 ## 🧩 Adding your own weapon pack
 
 1. Put the model (glTF / FBX with the arms + gun skinned together) under `Assets/Weapons/<Name>/` and extract its
@@ -87,6 +107,8 @@ The HUD (`UI/HudManager.cs`) counts hits, accuracy and knock-downs. Light props 
    `0,0,0` for a camera bone), the clip names and lengths, and `SightBone` + `SightRear` / `SightFront`
    (bone-local positions of the rear sight and front post) for ADS.
 4. Add its entity name to `Slots` on the Player's `Loadout`.
+5. For the third-person body: add a `TP_<Name>` child under `PlayerBody` (a static model of the gun with a **Bone
+   Attachment** on `mixamorig:RightHand`) and its support-hand offset to `ThirdPersonBody`.
 
 > Packs converted to glTF by Sketchfab sometimes carry broken skin data (inverse bind matrices in centimetres,
 > vertex data scaled per axis) and need their handedness flipped for the engine. The two packs here were repaired
