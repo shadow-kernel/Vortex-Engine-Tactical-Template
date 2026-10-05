@@ -224,7 +224,15 @@ public static class EscMenu
     private static int _aRes = -1, _aDlss = -1, _aFg = -1;
     private static void ApplyAll()
     {
-        if (!_aInit) { _aInit = true; _aVs = !UserSettings.VSync; _aFs = !UserSettings.Fullscreen; }
+        if (!_aInit)
+        {
+            _aInit = true; _aVs = !UserSettings.VSync; _aFs = !UserSettings.Fullscreen;
+            // the sliders start at the volumes the game already plays at (a shipped game restores the player's saved
+            // choice at start) — writing the defaults above here used to overwrite them the first time
+            UserSettings.MasterVolume = _aMv = Audio.GetBusVolume("Master");
+            UserSettings.SfxVolume = _aSfx = Audio.GetBusVolume("SFX");
+            UserSettings.MusicVolume = _aMus = Audio.GetBusVolume("Music");
+        }
         if (Chg(ref _aFov, UserSettings.Fov, 0.1f)) Settings.SetFieldOfView(CoDMovement.VerticalFov(UserSettings.Fov));
         if (Chg(ref _aRs, UserSettings.RenderScale, 0.005f)) Settings.SetRenderScale(UserSettings.RenderScale);
         if (Chg(ref _aMv, UserSettings.MasterVolume, 0.005f)) Audio.SetBusVolume("Master", UserSettings.MasterVolume);
