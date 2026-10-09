@@ -121,3 +121,16 @@ the component setup.
 Template code: **MIT** ([LICENSE](LICENSE)). Assets: the weapon packs are **CC-BY 4.0** — credit is required and
 given in [ATTRIBUTIONS.md](ATTRIBUTIONS.md) (keep that credit when you ship); environment textures and props are
 **CC0** (Poly Haven); range textures and sounds are generated for this template.
+
+## Feature tour
+
+The Range doubles as the engine's showcase: every milestone has a station you can see, shoot and edit in the Inspector. Press **H** in play for the keys.
+
+| Milestone | Where | What to try |
+|-----------|-------|-------------|
+| **v3.1 Physics v2** (Jolt) | *Showcase Physics Lab* — the lab is placed on open ground near the start | Shoot the **hinged door** (HingeJoint, limits), the **rope** of DistanceJoints with the ball, the **slider gate** on its rail; the **ball pit**: orange balls bounce (PhysicsMaterial bounciness 0.85), the blue **ice cubes** slide down the ramp (friction 0.02); ride the **moving platform** (kinematic Rigidbody + `MovingPlatform.cs`). **F3** draws the Jolt bodies / joints / contacts, **F4** switches the player onto Jolt's CharacterVirtual. Every joint and material is a component — change the limits, the masses, the bounciness. |
+| **v3.2 AI & Navigation** | the four **bots** on the far side, the `BotPatrol` route, `Assets/AI/Bot.vbt` | Fire a shot and listen: they investigate the noise, engage from cover, flinch and ragdoll. **F6** drops another bot where you look, **F7** overlays the navmesh, the agents' paths and the vision cones. Open `Bot.vbt` in the Behavior Tree editor while playing to watch the tree light up; `Bot.cs` holds the presets (recruit / regular / veteran). |
+| **v3.3 VFX** | *Showcase* corner near the start: the **fire barrel**, the **sparking fuse box**, the **dust motes**, the **decal wall**; the **shaft lamp** over the lab | Particle systems on entities (`Fire_Barrel.vfx`, `Sparks_Electric.vfx`, `Dust_Motes.vfx` — double-click a `.vfx` to edit it live), authored **decals** (blood, bullet holes — `Decal` components you can move and resize), **volumetric fog** with a shadowed spot lamp: look into the lamp and the sun for shafts, **F8** toggles it, the Environment panel holds the density / noise / anisotropy. Shoot anything: bullet holes, blood on the wall behind a bot, barrel smoke after a long burst, tracers and brass — from the third-person gun when the debug cam (**P**) looks at you. |
+| **v3.4 World & Streaming** | *coming with 3.4* | terrain, foliage, water, splines, streaming — the stations land here as they ship. |
+
+Everything is ordinary scene content: select a station in the Hierarchy, change it in the Inspector, play. `Assets/Scripts/Showcase/ShowcaseKeys.cs` is the key map.
