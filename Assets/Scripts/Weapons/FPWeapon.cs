@@ -29,6 +29,7 @@ public class FPWeapon : VortexBehaviour
 
     // ---------------- spread (degrees) ----------------
     public float HipSpread = 2.0f;
+    public float ShotLoudness = 1.6f;   // how far the bots hear a shot (AI Perception loudness; footsteps are ~0.35)
     public float MoveSpread = 1.8f;         // added at full run speed
     public float AdsSpread = 0.0f;
     public float ShotSpread = 0.45f;        // per shot while hip-firing, decays
@@ -440,6 +441,7 @@ public class FPWeapon : VortexBehaviour
         Vector3 end = PlayerRig.EyePos + dir * Range;
         RaycastHit hit;
         bool didHit = Physics.Raycast(PlayerRig.EyePos, dir, Range, out hit);
+        Perception.MakeNoise(PlayerRig.EyePos, ShotLoudness, EntityId);   // the bots hear every shot (AI Perception)
         if (didHit)
         {
             end = hit.Point;

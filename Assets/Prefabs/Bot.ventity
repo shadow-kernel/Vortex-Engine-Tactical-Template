@@ -1,0 +1,258 @@
+{
+  "id": "7ed164f0-8c44-4341-8f24-1b7018a8d968",
+  "name": "Bot",
+  "isActive": true,
+  "isStatic": false,
+  "layer": 0,
+  "tag": "Enemy",
+  "children": [
+    {
+      "id": "5370cc5f-3bb4-459c-b0d0-dad435ceebd8",
+      "name": "operator_body",
+      "isActive": true,
+      "isStatic": false,
+      "layer": 0,
+      "tag": "Untagged",
+      "children": [],
+      "components": [
+        {
+          "__type": "Transform",
+          "id": "01acc18a-7e73-47e4-a2e7-6306f685aaf7",
+          "isEnabled": true,
+          "localPosition": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "localRotation": {
+            "x": 0,
+            "y": 180,
+            "z": 0
+          },
+          "localScale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        {
+          "__type": "MeshRenderer",
+          "id": "623067b7-b1d9-4067-8cd0-08d1097bd791",
+          "isEnabled": true,
+          "meshPath": "Assets/Characters/Operator/operator.gltf#submesh0",
+          "materialPath": null,
+          "castShadows": true,
+          "receiveShadows": true,
+          "renderLayer": 0,
+          "colorR": 0.55,
+          "colorG": 0.52,
+          "colorB": 0.48,
+          "colorA": 1,
+          "metallic": 0,
+          "roughness": 0.75,
+          "normalStrength": 1,
+          "texturePath": null,
+          "shaderPath": null
+        }
+      ],
+      "isFolder": false,
+      "prefabPath": null,
+      "isLockedToParent": true
+    },
+    {
+      "id": "daa920da-ade2-45f7-88e8-fa89882e5424",
+      "name": "operator_gear",
+      "isActive": true,
+      "isStatic": false,
+      "layer": 0,
+      "tag": "Untagged",
+      "children": [],
+      "components": [
+        {
+          "__type": "Transform",
+          "id": "923a0b3a-b17b-4b70-be09-b541484ee1e6",
+          "isEnabled": true,
+          "localPosition": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "localRotation": {
+            "x": 0,
+            "y": 180,
+            "z": 0
+          },
+          "localScale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        {
+          "__type": "MeshRenderer",
+          "id": "98eaf91d-bdd2-49f1-93d2-a3018272568f",
+          "isEnabled": true,
+          "meshPath": "Assets/Characters/Operator/operator.gltf#submesh1",
+          "materialPath": null,
+          "castShadows": true,
+          "receiveShadows": true,
+          "renderLayer": 0,
+          "colorR": 0.55,
+          "colorG": 0.52,
+          "colorB": 0.48,
+          "colorA": 1,
+          "metallic": 0,
+          "roughness": 0.75,
+          "normalStrength": 1,
+          "texturePath": null,
+          "shaderPath": null
+        }
+      ],
+      "isFolder": false,
+      "prefabPath": null,
+      "isLockedToParent": true
+    }
+  ],
+  "components": [
+    {
+      "__type": "Transform",
+      "id": "d39f81bc-6e57-428f-8d5f-213d1394ed23",
+      "isEnabled": true,
+      "localPosition": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "localRotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "localScale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      }
+    },
+    {
+      "__type": "Animator",
+      "id": "8949245c-b03c-4442-80ee-4eb1a7a6d64e",
+      "isEnabled": true,
+      "clips": [
+        {
+          "name": "rifle_idle",
+          "path": "Assets/Characters/Operator/animations/rifle_idle.vanim"
+        },
+        {
+          "name": "rifle_aim",
+          "path": "Assets/Characters/Operator/animations/rifle_aim.vanim"
+        },
+        {
+          "name": "rifle_fire",
+          "path": "Assets/Characters/Operator/animations/rifle_fire.vanim"
+        },
+        {
+          "name": "rifle_run",
+          "path": "Assets/Characters/Operator/animations/rifle_run.vanim"
+        },
+        {
+          "name": "rifle_reload",
+          "path": "Assets/Characters/Operator/animations/rifle_reload.vanim"
+        },
+        {
+          "name": "walk",
+          "path": "Assets/Characters/Operator/animations/walk.vanim"
+        },
+        {
+          "name": "run",
+          "path": "Assets/Characters/Operator/animations/run.vanim"
+        },
+        {
+          "name": "strafe_l",
+          "path": "Assets/Characters/Operator/animations/strafe_l.vanim"
+        },
+        {
+          "name": "strafe_r",
+          "path": "Assets/Characters/Operator/animations/strafe_r.vanim"
+        },
+        {
+          "name": "death",
+          "path": "Assets/Characters/Operator/animations/death.vanim"
+        },
+        {
+          "name": "Idle",
+          "path": "Assets/Characters/Operator/animations/Idle.vanim"
+        }
+      ],
+      "defaultClip": "rifle_idle",
+      "playOnStart": true,
+      "speed": 1,
+      "applyRootMotion": false,
+      "rootMotionBone": ""
+    },
+    {
+      "__type": "CapsuleCollider",
+      "id": "ff011af8-21fc-41cd-9722-677c28516d8d",
+      "isEnabled": true,
+      "isTrigger": false,
+      "center": {
+        "x": 0,
+        "y": 0.95,
+        "z": 0
+      },
+      "radius": 0.38,
+      "height": 1.9,
+      "direction": 1
+    },
+    {
+      "__type": "NavAgent",
+      "id": "d9c188c6-cfc2-4bee-8c64-429091e2cb21",
+      "isEnabled": true,
+      "speed": 1.8,
+      "acceleration": 10,
+      "angularSpeed": 300,
+      "radius": 0.4,
+      "height": 1.9,
+      "stoppingDistance": 0.6,
+      "autoBraking": true,
+      "avoidancePriority": 50,
+      "baseOffset": 0,
+      "updateRotation": true,
+      "resolveCollisions": true
+    },
+    {
+      "__type": "AIPerception",
+      "id": "efa1ddb9-a494-49f6-97d3-8bec96e3b385",
+      "isEnabled": true,
+      "fieldOfView": 110,
+      "viewDistance": 40,
+      "eyeHeight": 1.6,
+      "hearingRange": 35,
+      "hearingThreshold": 0.12,
+      "targetTag": "Player",
+      "memorySeconds": 12,
+      "updateInterval": 0.1,
+      "sightConfirmTime": 0.2,
+      "proximityRadius": 2
+    },
+    {
+      "__type": "BehaviorTreeAgent",
+      "id": "8829b628-e32c-4d30-a5ec-d82071fbdc6b",
+      "isEnabled": true,
+      "treePath": "Assets/AI/Bot.vbt",
+      "runOnStart": true,
+      "tickInterval": 0,
+      "logTasks": false
+    },
+    {
+      "__type": "Script",
+      "id": "7484f244-d8fc-44bd-9078-45e2321c02b5",
+      "isEnabled": true,
+      "scriptPath": "Assets/Scripts/AI/Bot.cs",
+      "scriptClassName": "Bot"
+    }
+  ],
+  "isFolder": false,
+  "prefabPath": null,
+  "isLockedToParent": false
+}

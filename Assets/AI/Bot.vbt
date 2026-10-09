@@ -1,0 +1,78 @@
+{
+  "name": "Bot",
+  "version": 1,
+  "description": "A combat bot for the kill house: engage the player on sight from cover, investigate shots and footsteps, search the last known spot, otherwise patrol. The built-in tasks move the agent and read its perception; Bot.cs (the Script on the prefab) picks cover points, aims, fires, flinches and dies — every SendMessage node lands there as OnMessage(\"bot.<state>\").",
+  "blackboard": {
+    "EngageDistance": "28"
+  },
+  "root": {
+    "id": "root0001",
+    "kind": "selector",
+    "name": "Bot",
+    "children": [
+      {
+        "id": "engag001",
+        "kind": "sequence",
+        "name": "Engage",
+        "comment": "The player is in sight: tell the script (it aims and fires while the target stays visible), move to the cover point the script picked, hold there a moment, repeat — the script picks a new cover point on every bot.engage.",
+        "children": [
+          { "id": "engag002", "kind": "condition", "task": "CanSee", "abort": "both", "params": { "key": "Target" } },
+          { "id": "engag003", "kind": "task", "task": "SendMessage", "name": "tell: engage", "params": { "message": "bot.engage" } },
+          { "id": "engag004", "kind": "task", "task": "Wait", "name": "fire from here", "params": { "seconds": "1.2", "random": "0.8" } },
+          {
+            "id": "engag005", "kind": "succeeder", "name": "relocate (if a cover point exists)",
+            "children": [
+              {
+                "id": "engag006", "kind": "sequence",
+                "children": [
+                  { "id": "engag007", "kind": "condition", "task": "HasValue", "params": { "key": "CoverPoint" } },
+                  { "id": "engag008", "kind": "task", "task": "MoveTo", "name": "run to cover", "params": { "target": "CoverPoint", "acceptance": "0.8", "speed": "4.4" } },
+                  { "id": "engag009", "kind": "task", "task": "ClearValue", "params": { "key": "CoverPoint" } }
+                ]
+              }
+            ]
+          },
+          { "id": "engag010", "kind": "task", "task": "Wait", "name": "peek", "params": { "seconds": "1.5", "random": "1.5" } }
+        ]
+      },
+      {
+        "id": "inves001",
+        "kind": "sequence",
+        "name": "Investigate",
+        "comment": "A shot or sprinting footsteps: walk toward the noise, look around.",
+        "children": [
+          { "id": "inves002", "kind": "condition", "task": "HasHeard", "abort": "lowerPriority", "params": { "maxAge": "10", "key": "HeardAt" } },
+          { "id": "inves003", "kind": "task", "task": "SendMessage", "name": "tell: investigate", "params": { "message": "bot.investigate" } },
+          { "id": "inves004", "kind": "task", "task": "MoveTo", "name": "advance on the noise", "params": { "target": "HeardAt", "acceptance": "3", "speed": "3.0" } },
+          { "id": "inves005", "kind": "task", "task": "Wait", "name": "scan", "params": { "seconds": "2", "random": "2" } },
+          { "id": "inves006", "kind": "task", "task": "ForgetTarget", "params": { "key": "HeardAt" } }
+        ]
+      },
+      {
+        "id": "searc001",
+        "kind": "sequence",
+        "name": "Search",
+        "comment": "Contact lost: go to the last known position, wait, give up.",
+        "children": [
+          { "id": "searc002", "kind": "condition", "task": "LastKnownPosition", "params": { "key": "LastKnown" } },
+          { "id": "searc003", "kind": "task", "task": "SendMessage", "name": "tell: search", "params": { "message": "bot.search" } },
+          { "id": "searc004", "kind": "task", "task": "MoveTo", "name": "sweep the last known spot", "params": { "target": "LastKnown", "acceptance": "2", "speed": "3.0" } },
+          { "id": "searc005", "kind": "task", "task": "Wait", "params": { "seconds": "3", "random": "2" } },
+          { "id": "searc006", "kind": "task", "task": "ForgetTarget", "params": { "key": "Target" } }
+        ]
+      },
+      {
+        "id": "patro001",
+        "kind": "sequence",
+        "name": "Patrol",
+        "comment": "Quiet: the next waypoint of the BotPatrol route, then the route's wait time.",
+        "children": [
+          { "id": "patro002", "kind": "task", "task": "PatrolNext", "params": { "path": "BotPatrol", "key": "PatrolPoint", "waitKey": "PatrolWait" } },
+          { "id": "patro003", "kind": "task", "task": "SendMessage", "name": "tell: patrol", "params": { "message": "bot.patrol" } },
+          { "id": "patro004", "kind": "task", "task": "MoveTo", "name": "walk the route", "params": { "target": "PatrolPoint", "acceptance": "0.7", "speed": "1.8" } },
+          { "id": "patro005", "kind": "task", "task": "Wait", "params": { "seconds": "{PatrolWait}", "random": "2" } }
+        ]
+      }
+    ]
+  }
+}
