@@ -59,7 +59,7 @@ fire, tactical reload, empty reload, inspect, unequip — and on the UZI aim-in 
 | **Recoil** | the aim climbs per shot (vertical + learnable drift + random side, first-shot kick, ADS scale) and only part of it recovers (`RecoilRecovery`) — you pull down like in CoD |
 | **Kick & punch** | camera punch spring + weapon kick-back / muzzle-rise / roll springs, softer while aiming |
 | **Spread** | hip cone grows with movement and sustained fire, the crosshair opens with it; ADS is pin-point |
-| **Feel** | look sway (much steadier aimed), ADS breathing, sprint-out delay, shells ejected from the port, muzzle flash on the viewmodel layer, tracers, surface impacts (metal / wood / dirt / concrete) |
+| **Feel** | look sway (much steadier aimed), ADS breathing, sprint-out delay, shells ejected from the port, muzzle flash on the viewmodel layer, tracers, surface impacts (metal / wood / dirt / concrete); bullet-hole and blood decals (projected onto walls, blood on the surface behind a hit enemy), wisps of smoke from a hot barrel, and for the cameras that look at the player (debug cam `P`, spectators) the flash, tracers and brass come from the third-person gun (#178, #194) |
 | **FOV** | horizontal FOV like CoD's slider (default 90), weapon-specific ADS zoom (`AdsZoom`), separate viewmodel FOV |
 
 Every number is a public field — tune it in the inspector while playing.

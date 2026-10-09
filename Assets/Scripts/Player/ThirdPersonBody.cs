@@ -1,3 +1,4 @@
+using System;
 using Vortex;
 
 // THIRD-PERSON BODY — the full character other cameras see: the debug cam (P), a mirror, a spectator, later other
@@ -9,6 +10,9 @@ using Vortex;
 //   * crouch and slide lower the body (Foot IK keeps the feet on the ground, so the knees bend); a slide leans back
 //   * a shot plays a recoil overlay on the upper body, a reload plays the reload overlay (the support hand lets go)
 //   * the third-person copy of the equipped weapon sits in the right hand, the left hand is IK'd onto its foregrip
+//   * weapon VFX for every OTHER camera (#194): the gun's Muzzle / Eject sockets (child entities of the gun, or an
+//     offset along the aim) are published to PlayerRig; a shot flashes at the third-person muzzle on render layer 2
+//     (the local first-person view never sees it), the weapon starts its tracers and ejects brass there
 //   * at zero health the body becomes a ragdoll
 public class ThirdPersonBody : VortexBehaviour
 {
@@ -41,6 +45,14 @@ public class ThirdPersonBody : VortexBehaviour
     public Vector3 Gun1SupportRot = new Vector3(5.6117f, -115.5423f, 34.919f);
     public string SupportTip = "mixamorig:LeftHand";
 
+    // weapon VFX sockets: a "Muzzle" / "Eject" child under the gun wins; otherwise an offset from the gun along the aim
+    public string MuzzleVfx   = "Assets/VFX/MuzzleFlash_Rifle.vfx";
+    public float  MuzzleAhead = 0.42f;   // metres from the gun entity along the aim (no socket authored)
+    public float  MuzzleUp    = 0.03f;
+    public float  EjectAhead  = 0.08f;
+    public float  EjectRight  = 0.06f;
+    public float  EjectUp     = 0.04f;
+
     private string _base = "";
     private string _want = "";
     private float  _wantT;
@@ -50,12 +62,15 @@ public class ThirdPersonBody : VortexBehaviour
     private bool   _dead;
     private int    _slot = -2;
     private long   _gun0, _gun1;
+    private long   _muzzle0, _eject0, _muzzle1, _eject1;
     private float  _drop, _lean, _spineLean;
 
     public override void Start()
     {
         _gun0 = FindChild(Gun0);
         _gun1 = FindChild(Gun1);
+        _muzzle0 = FindChildOf(_gun0, "Muzzle"); _eject0 = FindChildOf(_gun0, "Eject");
+        _muzzle1 = FindChildOf(_gun1, "Muzzle"); _eject1 = FindChildOf(_gun1, "Eject");
         Play("rifle_idle", 0f);
         _shotsSeen = PlayerRig.ShotsFired;
     }
@@ -106,6 +121,10 @@ public class ThirdPersonBody : VortexBehaviour
         {
             _shotsSeen = PlayerRig.ShotsFired;
             if (!_reloading) { _fireT = 0.22f; PlayAnimationLayered(ClipDir + "rifle_fire.vanim", 1, UpperMask, 1f, 0.03f); }
+            // the flash the other cameras see, at the third-person gun (layer 2 = third-person only; the first-person
+            // weapon spawns its own on the viewmodel layer — every view sees exactly one)
+            if (MuzzleVfx != "" && PlayerRig.TpSocketsValid)
+                Vfx.SpawnAt(MuzzleVfx, PlayerRig.TpMuzzlePos, Quaternion.LookRotation(PlayerRig.TpMuzzleDir, Vector3.Up), 1f, 2);
         }
         if (_fireT > 0f) { _fireT -= dt; if (_fireT <= 0f) StopAnimationLayer(1); }
 
@@ -144,6 +163,25 @@ public class ThirdPersonBody : VortexBehaviour
         float pitch = PlayerRig.AimPitch * SpineAimGain * SpineAimSign * 0.5f;
         SetBoneAdditiveRotation(SpineBone0, new Vector3(pitch + _spineLean * 0.5f, 0f, 0f));
         SetBoneAdditiveRotation(SpineBone1, new Vector3(pitch + _spineLean * 0.5f, 0f, 0f));
+        PublishSockets();
+    }
+
+    // Where the gun in the hands fires from, for the views that see this body (#194).
+    private void PublishSockets()
+    {
+        long gun = _slot == 0 ? _gun0 : _slot == 1 ? _gun1 : 0;
+        if (gun == 0) { PlayerRig.TpSocketsValid = false; return; }
+        double yawRad = PlayerRig.Yaw * Math.PI / 180.0, pitchRad = PlayerRig.AimPitch * Math.PI / 180.0;
+        float cy = (float)Math.Cos(yawRad), sy = (float)Math.Sin(yawRad), cp = (float)Math.Cos(pitchRad), sp = (float)Math.Sin(pitchRad);
+        Vector3 aim = new Vector3(sy * cp, -sp, cy * cp);
+        Vector3 fwd = new Vector3(sy, 0f, cy);
+        Vector3 right = new Vector3(fwd.Z, 0f, -fwd.X);
+        long muzzle = _slot == 0 ? _muzzle0 : _muzzle1, eject = _slot == 0 ? _eject0 : _eject1;
+        Vector3 gunPos = Scene.WorldPositionOf(gun);
+        PlayerRig.TpMuzzlePos = muzzle != 0 ? Scene.WorldPositionOf(muzzle) : gunPos + aim * MuzzleAhead + Vector3.Up * MuzzleUp;
+        PlayerRig.TpEjectPos = eject != 0 ? Scene.WorldPositionOf(eject) : gunPos + aim * EjectAhead + right * EjectRight + Vector3.Up * EjectUp;
+        PlayerRig.TpMuzzleDir = aim;
+        PlayerRig.TpSocketsValid = true;
     }
 
     private void Play(string clip, float fade)
@@ -161,9 +199,12 @@ public class ThirdPersonBody : VortexBehaviour
         SetIkWeight(SupportTip, slot >= 0 && !_reloading ? 1f : 0f);
     }
 
-    private long FindChild(string name)
+    private long FindChild(string name) { return FindChildOf(EntityId, name); }
+
+    private static long FindChildOf(long parent, string name)
     {
-        long[] kids = Scene.Children(EntityId);
+        if (parent == 0) return 0;
+        long[] kids = Scene.Children(parent);
         for (int i = 0; kids != null && i < kids.Length; i++) if (Scene.NameOf(kids[i]) == name) return kids[i];
         return 0;
     }

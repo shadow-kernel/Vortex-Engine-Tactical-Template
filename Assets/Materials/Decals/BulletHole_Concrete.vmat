@@ -1,0 +1,18 @@
+{
+  "Name": "BulletHole_Concrete",
+  "Version": "2.0",
+  "BaseColor": [ 1, 1, 1, 1 ],
+  "Metallic": 0.0,
+  "Roughness": 0.9,
+  "AmbientOcclusion": 1,
+  "NormalStrength": 1,
+  "HeightScale": 0.0,
+  "UseDirectXNormals": false,
+  "EmissiveStrength": 0.0,
+  "TwoSided": true,
+  "BlendMode": "AlphaBlend",
+  "CastShadows": false,
+  "ReceiveShadows": true,
+  "AlbedoTexture": "../../VFX/Textures/decal_bullet_hole.png",
+  "UVTiling": [ 1, 1 ]
+}

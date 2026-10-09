@@ -31,11 +31,21 @@ public class Bot : VortexBehaviour
     public float  RunSpeed    = 3.2f;
     public float  Fade        = 0.18f;
     public string ShotSound   = "Assets/Audio/rifle_shot_1.wav";
+    // weapon VFX (#178): the flash in front of the rifle, a tracer every Nth shot, impacts + decals where the bullet lands
+    public string MuzzleVfx   = "Assets/VFX/MuzzleFlash_Rifle.vfx";
+    public string TracerVfx   = "Assets/VFX/Tracer.vfx";
+    public int    TracerEvery = 2;
+    public string ImpactVfx   = "Assets/VFX/Impact_Concrete.vfx";
+    public string ImpactFleshVfx = "Assets/VFX/Impact_Flesh.vfx";
+    public string ImpactDecal = "Assets/Materials/Decals/BulletHole_Concrete.vmat";
+    public string BloodDecal  = "Assets/Materials/Decals/Blood_Splat.vmat";
+    public float  MuzzleHeight = 1.38f;     // the rifle in the hands (m above the feet)
+    public float  MuzzleAhead  = 0.6f;
     public float  DespawnAfter = 10f;
     public string UpperMask   = "mixamorig:Spine1+";
 
     private float _hp, _flinch, _sight, _nextShot, _despawn;
-    private int _burstLeft;
+    private int _burstLeft, _shots;
     private bool _engaged, _dead;
     private string _clip = "", _state = "";
     private long _target;
@@ -118,11 +128,38 @@ public class Bot : VortexBehaviour
         dir = Norm(aim - muzzle);
 
         RaycastHit hit;
-        if (Physics.Raycast(muzzle, dir, FireRange + 5f, out hit) && hit.EntityId == _target)
-            SendMessage(hit.EntityId, "damage", Damage);
+        bool didHit = Physics.Raycast(muzzle, dir, FireRange + 5f, out hit, ~0, EntityId);
+        if (didHit && hit.EntityId == _target) SendMessage(hit.EntityId, "damage", Damage);
         PlayAnimationLayered(ClipDir + "rifle_fire.vanim", 1, UpperMask, 1f, 0.03f);
+        ShotVfx(me, dir, didHit, hit);
         if (ShotSound != "") Audio.PlayOneShot(ShotSound, muzzle, 0.75f);
         Perception.MakeNoise(muzzle, 1.4f, EntityId);   // the other bots hear it
+    }
+
+    // Flash, tracer, impact and decal of one shot (#178) — the world sees the bots fire like the player does.
+    private void ShotVfx(Vector3 me, Vector3 dir, bool didHit, RaycastHit hit)
+    {
+        _shots++;
+        Vector3 muzzle = new Vector3(me.X, me.Y + MuzzleHeight, me.Z) + dir * MuzzleAhead;
+        Quaternion aim = Quaternion.LookRotation(dir, Vector3.Up);
+        if (MuzzleVfx != "") Vfx.SpawnAt(MuzzleVfx, muzzle, aim, 0.85f);
+        Vector3 end = didHit ? hit.Point : muzzle + dir * FireRange;
+        if (TracerVfx != "" && TracerEvery > 0 && (_shots % TracerEvery) == 0) Vfx.Beam(muzzle + dir * 0.3f, end, TracerVfx);
+        if (!didHit) return;
+        string tag = Scene.TagOf(hit.EntityId);
+        bool flesh = hit.EntityId == _target || tag == "Player" || tag == "Enemy";
+        Vector3 up = System.Math.Abs(hit.Normal.Y) > 0.9f ? new Vector3(1f, 0f, 0f) : Vector3.Up;
+        string vfx = flesh ? ImpactFleshVfx : ImpactVfx;
+        if (vfx != "") Vfx.SpawnAt(vfx, hit.Point + hit.Normal * 0.01f, Quaternion.LookRotation(hit.Normal, up));
+        float r = (float)_rng.NextDouble();
+        if (flesh)
+        {
+            RaycastHit behind;
+            if (BloodDecal != "" && Physics.Raycast(hit.Point + dir * 0.05f, dir, 6f, out behind, ~0, hit.EntityId) && !Physics.HasRigidbody(behind.EntityId))
+                Decal.Spawn(behind.Point, behind.Normal, BloodDecal, new Vector3(0.4f + 0.3f * r, 0.25f, 0.4f + 0.3f * (1f - r)), 60f, r * 360f, DecalBlend.Multiply, 1f, 1f, 1f, 0.9f);
+        }
+        else if (ImpactDecal != "" && !Physics.HasRigidbody(hit.EntityId))
+            Decal.Spawn(hit.Point, hit.Normal, ImpactDecal, 0.075f + 0.03f * r, 60f);
     }
 
     // ---- the tree talks: SendMessage nodes in Bot.vbt; the player's weapons: "damage" ----

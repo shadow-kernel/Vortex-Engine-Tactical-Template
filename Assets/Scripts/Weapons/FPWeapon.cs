@@ -10,7 +10,11 @@ using Vortex;
 //     of it recovers, the camera punches and springs back, the gun kicks back and up on its own springs;
 //   * hip spread that grows with movement and sustained fire; ADS is pin-point;
 //   * sprint lowers the gun (Run clip), firing is blocked until the sprint-out time has passed;
-//   * muzzle flash + tracer + surface impacts (VFX), shell ejection, layered fire sound, dry fire, reload sound cues;
+//   * muzzle flash + tracer + surface impacts (VFX), bullet-hole / blood decals, barrel smoke after sustained fire,
+//     shell ejection, layered fire sound, dry fire, reload sound cues;
+//   * for the views that look AT the player (debug cam, spectators) the tracers start and the brass ejects at the
+//     third-person gun's sockets (PlayerRig.Tp*, published by ThirdPersonBody); the first-person flash lives on the
+//     viewmodel layer, the third-person copy on layer 2 — every camera sees exactly one (#194)
 //   * tactical vs empty reload (one in the chamber), inspect (I), fire mode toggle (B).
 // Lives on the viewmodel root entity (the one with the Animator). WeaponLoadout equips it; only the equipped weapon
 // runs. Every number here is a public field: tune it in the inspector while playing.
@@ -108,6 +112,20 @@ public class FPWeapon : VortexBehaviour
     public string ImpactDirtVfx = "Assets/VFX/Impact_Dirt.vfx";
     public string ImpactFleshVfx = "Assets/VFX/Impact_Flesh.vfx";
     public string ShellPrefab = "Assets/Prefabs/Shell.ventity";
+    // decals (#178): projected onto whatever the bullet hits (not onto rigidbodies — they move); blood lands on the
+    // surface BEHIND a hit enemy
+    public string DecalDefault = "Assets/Materials/Decals/BulletHole_Concrete.vmat";
+    public string DecalMetal   = "Assets/Materials/Decals/BulletHole_Metal.vmat";
+    public string DecalWood    = "Assets/Materials/Decals/BulletHole_Wood.vmat";
+    public string DecalBlood   = "Assets/Materials/Decals/Blood_Splat.vmat";
+    public float  DecalSize    = 0.085f;    // bullet hole across (m)
+    public float  BloodSize    = 0.55f;     // blood splat across (m)
+    public float  DecalLifetime = 60f;      // seconds (0 = forever; the newest 512 stay)
+    // barrel smoke (#178): every shot heats the barrel, a hot barrel smokes while it cools
+    public string BarrelSmokeVfx = "Assets/VFX/BarrelSmoke.vfx";
+    public float  HeatPerShot = 0.11f;
+    public float  HeatCooling = 0.28f;      // per second (faster when hotter)
+    public float  SmokeAbove  = 0.4f;       // heat at which the wisps start
 
     // ---------------- runtime ----------------
     public bool Equipped;                   // set by WeaponLoadout
@@ -182,6 +200,9 @@ public class FPWeapon : VortexBehaviour
         if (!Equipped || dt <= 0f) return;
         _stateT += dt; _equipT += dt; _sinceShot += dt;
         if (_cooldown > 0f) _cooldown -= dt;
+        if (_heat > 0f) { _heat -= HeatCooling * dt * (0.5f + _heat); if (_heat < 0f) _heat = 0f; }
+        if (_smokeT > 0f) _smokeT -= dt;
+        if (_heat > SmokeAbove && _sinceShot > 0.1f && _smokeT <= 0f && BarrelSmokeVfx != "") BarrelSmoke();
         TickAutoReload(dt);
         if (_spreadKick > 0f) { _spreadKick -= SpreadRecovery * dt * (0.4f + _spreadKick); if (_spreadKick < 0f) _spreadKick = 0f; }
         PlayerRig.Ammo = Mag; PlayerRig.MagSize = MagazineSize;
@@ -404,6 +425,7 @@ public class FPWeapon : VortexBehaviour
     {
         _cooldown = 60f / System.Math.Max(1f, FireRate);
         Mag--; _shots++; _burst++; _sinceShot = 0f; PlayerRig.ShotsFired++;
+        _heat += HeatPerShot; if (_heat > 1f) _heat = 1f;
         float r1 = (float)_rng.NextDouble(), r2 = (float)_rng.NextDouble();
 
         // sound: recorded shot (random container) + low punch + tail
@@ -452,17 +474,20 @@ public class FPWeapon : VortexBehaviour
             if (flesh) { PlayerRig.HitMarkerT = 0.14f; PlayerRig.HitMarkerKill = false; }   // range targets mark their own hits
             string vfx = flesh ? ImpactFleshVfx : SurfaceVfx(hit.EntityId);
             if (vfx != "") Vfx.SpawnAt(vfx, hit.Point + hit.Normal * 0.01f, Quaternion.LookRotation(hit.Normal, System.Math.Abs(hit.Normal.Y) > 0.9f ? new Vector3(1f, 0f, 0f) : Vector3.Up));
+            SpawnDecal(hit, dir, flesh, r1, r2);
         }
 
         // muzzle flash (first-person layer) + tracer from the muzzle
         Vector3 muzzle = MuzzlePosition(dir);
         if (MuzzleVfx != "") Vfx.SpawnAt(MuzzleVfx, muzzle, Quaternion.LookRotation(dir, Vector3.Up), 1f, 1);
-        if (TracerVfx != "" && TracerEvery > 0 && (_shots % TracerEvery) == 0) Vfx.Beam(muzzle + dir * 0.4f, end, TracerVfx);
+        // the views that look at the player see the tracer leave the third-person gun, not the hidden viewmodel at the head
+        bool external = Camera.IsExternalView && PlayerRig.TpSocketsValid;
+        if (TracerVfx != "" && TracerEvery > 0 && (_shots % TracerEvery) == 0) Vfx.Beam(external ? PlayerRig.TpMuzzlePos : muzzle + dir * 0.4f, end, TracerVfx);
 
         // brass
         if (ShellPrefab != "")
         {
-            Vector3 ej = BonePoint(EjectBone, EjectOffset, muzzle - dir * 0.25f);
+            Vector3 ej = external ? PlayerRig.TpEjectPos : BonePoint(EjectBone, EjectOffset, muzzle - dir * 0.25f);
             Quaternion camQ = Quaternion.FromEuler(new Vector3(PlayerRig.Pitch, PlayerRig.Yaw, 0f));
             long shell = Scene.Instantiate(ShellPrefab, ej, PlayerRig.Yaw);
             if (shell != 0) SendMessage(shell, "eject", camQ.Rotate(new Vector3(1.6f + r1, 1.4f + r2, -0.2f)));
@@ -470,6 +495,38 @@ public class FPWeapon : VortexBehaviour
         if (Mag == 0 && Reserve > 0) { /* CoD: the next trigger pull reloads; auto-reload after a beat */ _autoReload = 0.3f; }
     }
     private float _autoReload = -1f;
+    private float _heat, _smokeT;
+
+    // A bullet hole on the surface a bullet hit (a blood splat on the surface behind an enemy): the projected decal
+    // system (#120); nothing on rigidbodies — a decal is world-fixed and would float once the body moves.
+    private void SpawnDecal(RaycastHit hit, Vector3 dir, bool flesh, float r1, float r2)
+    {
+        if (flesh)
+        {
+            RaycastHit behind;
+            if (DecalBlood != "" && Physics.Raycast(hit.Point + dir * 0.05f, dir, 6f, out behind, ~0, hit.EntityId) && !Physics.HasRigidbody(behind.EntityId))
+                Decal.Spawn(behind.Point, behind.Normal, DecalBlood, new Vector3(BloodSize * (0.7f + 0.6f * r1), BloodSize * 0.5f, BloodSize * (0.7f + 0.6f * r2)),
+                    DecalLifetime, r1 * 360f, DecalBlend.Multiply, 1f, 1f, 1f, 0.9f);
+            return;
+        }
+        if (Physics.HasRigidbody(hit.EntityId)) return;
+        string vfx = SurfaceVfx(hit.EntityId);
+        string material = vfx == ImpactMetalVfx ? DecalMetal : vfx == ImpactWoodVfx ? DecalWood : DecalDefault;
+        if (material != "") Decal.Spawn(hit.Point, hit.Normal, material, DecalSize * (0.85f + 0.3f * r2), DecalLifetime);
+    }
+
+    // Wisps of smoke from a hot barrel, at the first-person muzzle (viewmodel layer) and the third-person one (layer 2).
+    private void BarrelSmoke()
+    {
+        float yawRad = PlayerRig.Yaw * 0.0174532925f, pitchRad = PlayerRig.Pitch * 0.0174532925f;
+        float cy = (float)System.Math.Cos(yawRad), sy = (float)System.Math.Sin(yawRad);
+        float cp = (float)System.Math.Cos(pitchRad), sp = (float)System.Math.Sin(pitchRad);
+        Vector3 dir = new Vector3(sy * cp, -sp, cy * cp);
+        float scale = 0.6f + _heat * 0.8f;
+        Vfx.SpawnAt(BarrelSmokeVfx, MuzzlePosition(dir), Quaternion.LookRotation(dir, Vector3.Up), scale, 1);
+        if (PlayerRig.TpSocketsValid) Vfx.SpawnAt(BarrelSmokeVfx, PlayerRig.TpMuzzlePos, Quaternion.LookRotation(PlayerRig.TpMuzzleDir, Vector3.Up), scale, 2);
+        _smokeT = 0.18f + (1f - _heat) * 0.35f;
+    }
 
     private string SurfaceVfx(long entity)
     {

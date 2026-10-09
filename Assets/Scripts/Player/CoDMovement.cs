@@ -67,6 +67,11 @@ public static class PlayerRig
     public static float  BobPhase;                 // stride phase (rad, 2π = two steps) — camera AND viewmodel bob share it
     public static float  BobWeight;                // 0 standing .. 1 moving (eases in/out, so the bob never pops)
     public static FPWeapon ActiveWeapon;           // the equipped first-person weapon (animated viewmodel); null = unarmed
+    // Third-person weapon sockets (#194), published by ThirdPersonBody every frame: the muzzle, the ejection port and the
+    // aim direction of the gun in the body's hands — where the views that look AT the player see the flash, the
+    // tracers start and the brass comes out.
+    public static Vector3 TpMuzzlePos, TpMuzzleDir = Vector3.Forward, TpEjectPos;
+    public static bool TpSocketsValid;
     public static long   FpWeaponEntity;           // its entity (RenderLayer 1 copy)
     public static float  ReloadProgress = -1f;     // 0..1 while the active firearm reloads, -1 otherwise
     public static float  WeaponKickBack, WeaponKickPitch, WeaponKickYaw, WeaponKickRoll;   // per-shot impulses for the viewmodel spring
