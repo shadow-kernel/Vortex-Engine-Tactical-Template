@@ -12,6 +12,8 @@ public class ShowcaseKeys : VortexBehaviour
     public float  FogSunShafts   = 0.3f;
     public float  FogLights      = 1.4f;
     public float  HelpSeconds    = 7f;
+    public float  TerraformRadius = 2.5f;     // F9 / F10: the crater / mound dug into the terrain plot where you look
+    public float  TerraformDepth  = 0.6f;
 
     private bool _physicsDebug, _aiDebug, _fog = true;
 
@@ -67,11 +69,28 @@ public class ShowcaseKeys : VortexBehaviour
             else Atmosphere.ClearVolumetricFog();
             Toast(_fog ? "Volumetric fog ON — look into the lamps and the sun for shafts (F8)" : "Volumetric fog OFF (F8)");
         }
+        // v3.4 World — terraforming at play time: F9 digs a crater where you look, F10 raises a mound (Terrain.Deform);
+        // the chunk meshes, the Jolt height field and the character's collision follow on the next frame
+        if (Input.GetKeyDown("F9") || Input.GetKeyDown("F10"))
+        {
+            bool dig = Input.GetKeyDown("F9");
+            float yawRad = PlayerRig.Yaw * 0.0174532925f, pitchRad = PlayerRig.Pitch * 0.0174532925f;
+            float cy = (float)System.Math.Cos(yawRad), sy = (float)System.Math.Sin(yawRad);
+            float cp = (float)System.Math.Cos(pitchRad), sp = (float)System.Math.Sin(pitchRad);
+            Vector3 dir = new Vector3(sy * cp, -sp, cy * cp);
+            RaycastHit hit;
+            if (Physics.Raycast(PlayerRig.EyePos, dir, 80f, out hit) && Terrain.IsTerrain(hit.EntityId))
+            {
+                Terrain.Deform(hit.Point, TerraformRadius, dig ? TerraformDepth : -TerraformDepth);
+                Toast(dig ? "Terrain: crater dug (F9) — mesh, collision and navmesh ground follow" : "Terrain: mound raised (F10) — walk up it");
+            }
+            else Toast("Terrain: look at the terrain plot (the hills by the lab) and press F9 (dig) / F10 (raise)");
+        }
     }
 
     private void Help()
     {
-        Toast("FEATURE TOUR  H help · F3 physics debug · F4 Jolt character · F6 spawn bot · F7 AI debug · F8 volumetric fog · P debug cam");
+        Toast("FEATURE TOUR  H help · F3 physics debug · F4 Jolt character · F6 spawn bot · F7 AI debug · F8 volumetric fog · F9/F10 dig/raise terrain · P debug cam");
         PlayerRig.ToastT = HelpSeconds;
     }
 

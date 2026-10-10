@@ -24,6 +24,8 @@ public class FPWeapon : VortexBehaviour
     public string WeaponName = "UZI";
     public float  Damage = 26f;
     public float  Range = 160f;
+    public float  CraterRadius = 0.45f;       // v3.4 terrain: a bullet digs a small crater into the heightfield (0 = off)
+    public float  CraterDepth = 0.06f;
     public float  FireRate = 900f;          // rounds per minute
     public bool   Automatic = true;
     public bool   HasSemiMode = true;       // B toggles auto / semi
@@ -475,6 +477,8 @@ public class FPWeapon : VortexBehaviour
             string vfx = flesh ? ImpactFleshVfx : SurfaceVfx(hit.EntityId);
             if (vfx != "") Vfx.SpawnAt(vfx, hit.Point + hit.Normal * 0.01f, Quaternion.LookRotation(hit.Normal, System.Math.Abs(hit.Normal.Y) > 0.9f ? new Vector3(1f, 0f, 0f) : Vector3.Up));
             SpawnDecal(hit, dir, flesh, r1, r2);
+            // v3.4 terrain: bullets dig small craters into the heightfield — the render chunks and the collision follow
+            if (!flesh && CraterDepth > 0f && Terrain.IsTerrain(hit.EntityId)) Terrain.Deform(hit.Point, CraterRadius, CraterDepth);
         }
 
         // muzzle flash (first-person layer) + tracer from the muzzle
