@@ -15,7 +15,7 @@ public class ShowcaseKeys : VortexBehaviour
     public float  TerraformRadius = 2.5f;     // F9 / F10: the crater / mound dug into the terrain plot where you look
     public float  TerraformDepth  = 0.6f;
 
-    private bool _physicsDebug, _aiDebug, _fog = true;
+    private bool _physicsDebug, _aiDebug, _fog = true, _storm;
 
     public override void Start()
     {
@@ -86,11 +86,18 @@ public class ShowcaseKeys : VortexBehaviour
             }
             else Toast("Terrain: look at the terrain plot (the hills by the lab) and press F9 (dig) / F10 (raise)");
         }
+        // v3.4 World — the wind every foliage layer sways with: a breeze, or a storm (Foliage.SetWind)
+        if (Input.GetKeyDown("F11"))
+        {
+            _storm = !_storm;
+            Foliage.SetWind(_storm ? 2.6f : 1f);
+            Toast(_storm ? "Wind: STORM (F11) — the shrubs on the terrain plot bend" : "Wind: breeze (F11)");
+        }
     }
 
     private void Help()
     {
-        Toast("FEATURE TOUR  H help · F3 physics debug · F4 Jolt character · F6 spawn bot · F7 AI debug · F8 volumetric fog · F9/F10 dig/raise terrain · P debug cam");
+        Toast("FEATURE TOUR  H help · F3 physics debug · F4 Jolt character · F6 spawn bot · F7 AI debug · F8 volumetric fog · F9/F10 dig/raise terrain · F11 storm wind · P debug cam");
         PlayerRig.ToastT = HelpSeconds;
     }
 
