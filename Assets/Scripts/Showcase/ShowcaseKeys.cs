@@ -41,7 +41,8 @@ public class ShowcaseKeys : VortexBehaviour
             Physics.SetCharacterController(jolt ? "builtin" : "jolt");
             Toast(jolt ? "Player controller: BUILT-IN capsule (F4)" : "Player controller: JOLT CharacterVirtual (F4) — stairs, slopes, pushing crates");
         }
-        // v3.2 AI & Navigation — drop another combat bot where you look; it joins the navmesh, the perception and the tree
+        // v3.2 AI & Navigation — drop another combat bot where you look; it joins the navmesh, the perception and the tree.
+        // Unlike the four in the yard it has no arena: it fights wherever it stands (you asked for it).
         if (Input.GetKeyDown("F6"))
         {
             float yawRad = PlayerRig.Yaw * 0.0174532925f, pitchRad = PlayerRig.Pitch * 0.0174532925f;
@@ -51,7 +52,9 @@ public class ShowcaseKeys : VortexBehaviour
             RaycastHit hit;
             Vector3 at = Physics.Raycast(PlayerRig.EyePos, dir, 60f, out hit) ? hit.Point + hit.Normal * 0.1f : PlayerRig.EyePos + dir * 8f;
             long bot = Scene.Instantiate(BotPrefab, at, PlayerRig.Yaw + 180f);
-            Toast(bot != 0 ? "Bot spawned (F6) — it patrols, hears your shots and engages from cover" : "Bot prefab missing: " + BotPrefab);
+            var brain = bot != 0 ? Scene.GetBehaviour<Bot>(bot) : null;
+            if (brain != null) brain.ArenaTag = "";
+            Toast(bot != 0 ? "Bot spawned (F6) — it hears your shots and engages from cover, right here" : "Bot prefab missing: " + BotPrefab);
         }
         // v3.2 AI & Navigation — the navmesh, the agents' paths and the vision cones as overlays
         if (Input.GetKeyDown("F7"))

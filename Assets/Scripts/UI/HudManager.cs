@@ -4,6 +4,8 @@ using Vortex;
 // (name, big magazine count, reserve, a round-by-round strip, fire mode), a dynamic crosshair that opens with the
 // weapon's spread and fades out while aiming, hit markers, the "RELOAD" / "LOW AMMO" prompt and a slim health bar
 // bottom-left. Everything reads PlayerRig, which the movement and weapon scripts fill. One entity.
+// An Area with an "enterText" / "exitText" property (the Range's Bot Arena) shows it as a notice when the player walks
+// in / out.
 public class HudManager : VortexBehaviour
 {
     public float MapRange = 40f;     // metres shown across the minimap
@@ -15,6 +17,28 @@ public class HudManager : VortexBehaviour
     private static readonly Color Dim = Color.Rgba(170, 176, 186, 220);
     private static readonly Color Shadow = Color.Rgba(0, 0, 0, 130);
     private static readonly Color Accent = Color.Rgba(255, 196, 64, 245);
+
+    public override void Start()
+    {
+        Areas.Entered += OnAreaEntered;
+        Areas.Exited += OnAreaExited;
+    }
+
+    public override void OnDestroy()
+    {
+        Areas.Entered -= OnAreaEntered;
+        Areas.Exited -= OnAreaExited;
+    }
+
+    private void OnAreaEntered(long entity, AreaInfo area) { AreaNotice(entity, area.Get("enterText")); }
+    private void OnAreaExited(long entity, AreaInfo area) { AreaNotice(entity, area.Get("exitText")); }
+
+    private static void AreaNotice(long entity, string text)
+    {
+        if (entity != PlayerRig.Entity || string.IsNullOrEmpty(text)) return;
+        PlayerRig.Toast = text;
+        PlayerRig.ToastT = 3.5f;
+    }
 
     public override void Update(float dt)
     {

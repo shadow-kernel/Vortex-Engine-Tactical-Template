@@ -284,6 +284,10 @@ public class CoDMovement : VortexBehaviour
         Vector3 r = Rotation; _pitch = r.X; _yaw = r.Y;
         _spawnFeet = _feet; _spawnYaw = _yaw; _spawnPitch = _pitch;
         PlayerRig.Entity = EntityId; PlayerRig.Dead = false;
+        // The AI's sight rays aim at fractions of a target's height ABOVE the entity — and this entity is the eye, so the
+        // default height (1.7) put them 2.1–3.3 m above the ground: the bots saw the player over the 2.4 m lane walls and
+        // over the cover he crouched behind. 0.1 keeps them at the eyes (crouching lowers them with the camera).
+        Perception.SetTargetHeight(EntityId, 0.1f);
         _levelCapture = System.Environment.GetEnvironmentVariable("VM_LEVEL") == "1";   // capture-only: lock a clean level view
         _forceAds     = System.Environment.GetEnvironmentVariable("VM_ADS") == "1";     // capture-only: force aim-down-sight
         _lookDown     = System.Environment.GetEnvironmentVariable("VM_DOWN") == "1";    // capture-only: look down to check body awareness

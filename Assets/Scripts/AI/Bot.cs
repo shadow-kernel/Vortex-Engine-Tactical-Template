@@ -11,6 +11,10 @@ using Vortex;
 //   * shots are raycasts ("damage" to whoever is hit, like the player's weapons — the player, which is a character and no
 //     collider, through PlayerRig.RayHitsBody), with a muzzle sound and a noise every other bot hears; hits on the bot
 //     flinch the spine (additive), at zero health the body ragdolls with the bullet's impulse and despawns later
+//   * the arena: an Area tagged ArenaTag (the Range's "Bot Arena" over the yard) is the bots' ground. They patrol, take
+//     cover, investigate and search inside it — a noise or a last known spot outside it takes them to its edge, not
+//     beyond — and they fire only at a target inside it, or at anyone for ProvokedSeconds after one of them is hit. So the
+//     booths and the feature-tour stations stay quiet, and walking into the yard starts the fight. No such area: no limits.
 // All of it is a project script — the engine ticks the tree, moves the agent and senses; the game decides what it means.
 public class Bot : VortexBehaviour
 {
@@ -43,8 +47,10 @@ public class Bot : VortexBehaviour
     public float  MuzzleAhead  = 0.6f;
     public float  DespawnAfter = 10f;
     public string UpperMask   = "mixamorig:Spine1+";
+    public string ArenaTag    = "bot-arena";   // the Area the bots fight in (empty = anywhere: the F6 bots of the feature tour)
+    public float  ProvokedSeconds = 8f;       // after a hit on any bot: how long they fire at a target outside the arena too
 
-    private float _hp, _flinch, _sight, _nextShot, _despawn;
+    private float _hp, _flinch, _sight, _nextShot, _despawn, _provoked;
     private int _burstLeft, _shots;
     private bool _engaged, _dead;
     private string _clip = "", _state = "";
@@ -79,6 +85,7 @@ public class Bot : VortexBehaviour
             if (_despawn <= 0f) Scene.Destroy(EntityId);
             return;
         }
+        if (_provoked > 0f) _provoked -= dt;
 
         // ---- locomotion from the agent's velocity ----
         Vector3 v = Navigation.Velocity(EntityId);
@@ -104,6 +111,7 @@ public class Bot : VortexBehaviour
         float dist = (float)System.Math.Sqrt(dx * dx + dz * dz);
         if (speed < 0.25f && dist > 0.01f) Rotation = new Vector3(0f, (float)(System.Math.Atan2(dx, dz) * 180.0 / System.Math.PI), 0f);
         if (dist > FireRange || _sight < ReactionTime) return;
+        if (!MayFire()) return;   // hold fire: the target stands outside the arena (and nobody has hit a bot lately)
         _nextShot -= dt;
         if (_nextShot > 0f) return;
         if (_burstLeft <= 0) _burstLeft = BurstShots;
@@ -185,17 +193,56 @@ public class Bot : VortexBehaviour
                 _flinch = 1f;
                 long player = Scene.Find("Player");
                 if (player != 0) _lastHitFrom = Scene.WorldPositionOf(player);
+                // a hit provokes the squad: they fire back for a while, wherever the shooter stands
+                var squad = Scene.FindByTag(Scene.TagOf(EntityId));
+                if (squad != null) foreach (var b in squad) SendMessage(b, "bot.provoked");
                 if (_hp <= 0f) Die();
                 break;
+            case "bot.provoked": _provoked = ProvokedSeconds; break;
             case "bot.engage":
                 SetState("engage");
                 _engaged = true; _target = BlackboardTarget(); _nextShot = 0f; _burstLeft = 0;
                 PickCover();
                 break;
-            case "bot.investigate": SetState("investigate"); _engaged = false; break;
-            case "bot.search":      SetState("search");      _engaged = false; break;
+            case "bot.investigate": SetState("investigate"); _engaged = false; Leash("HeardAt"); break;
+            case "bot.search":      SetState("search");      _engaged = false; Leash("LastKnown"); break;
             case "bot.patrol":      SetState("patrol");      _engaged = false; break;
         }
+    }
+
+    // ---- the arena (ArenaTag): where the bots go, and whom they fire at ----
+
+    private bool HasArena() { return !string.IsNullOrEmpty(ArenaTag) && Areas.Find(ArenaTag) != null; }
+    private bool InArena(Vector3 p) { return !HasArena() || Areas.IsPointInside(p, ArenaTag); }
+
+    /// <summary>Fire at the target? Inside the arena always; outside it only while provoked (a bot was hit).</summary>
+    private bool MayFire()
+    {
+        if (_provoked > 0f || !HasArena()) return true;
+        Vector3 feet; float height;
+        TargetBody(out feet, out height);
+        return InArena(new Vector3(feet.X, feet.Y + height * 0.5f, feet.Z));
+    }
+
+    /// <summary>The tree is about to walk to a blackboard position (a noise, the last known spot): outside the arena it
+    /// becomes the arena's edge on the way there — the bots come to the edge of their ground and look, they don't follow.</summary>
+    private void Leash(string key)
+    {
+        var bb = BehaviorTree.BlackboardOf(EntityId);
+        Vector3 p;
+        if (bb == null || !bb.TryGet(key, out p) || InArena(p)) return;
+        var arena = Areas.Find(ArenaTag);
+        Vector3 c = arena.Position;   // the area's centre
+        float inside = 0f, outside = 1f;
+        for (int i = 0; i < 16; i++)
+        {
+            float m = (inside + outside) * 0.5f;
+            if (Areas.IsPointInside(c + (p - c) * m, ArenaTag)) inside = m; else outside = m;
+        }
+        Vector3 edge = c + (p - c) * inside;
+        float bx = c.X - edge.X, bz = c.Z - edge.Z, bl = (float)System.Math.Sqrt(bx * bx + bz * bz);
+        if (bl > 1.5f) { edge.X += bx * 1.5f / bl; edge.Z += bz * 1.5f / bl; }   // a step inside
+        bb.Set(key, new Vector3(edge.X, WorldPosition.Y, edge.Z));
     }
 
     /// <summary>A navmesh point near the bot that the player cannot see — written to the blackboard as CoverPoint.</summary>
@@ -209,7 +256,7 @@ public class Bot : VortexBehaviour
         for (int i = 0; i < 14; i++)
         {
             Vector3 p;
-            if (!Navigation.RandomPoint(me, 8f, out p)) continue;
+            if (!Navigation.RandomPoint(me, 8f, out p) || !InArena(p)) continue;
             float dx = p.X - tp.X, dz = p.Z - tp.Z;
             if (dx * dx + dz * dz < 5f * 5f) continue;                       // not toward the player's feet
             Vector3 head = new Vector3(p.X, p.Y + 1.4f, p.Z);
