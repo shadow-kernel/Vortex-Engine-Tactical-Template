@@ -314,10 +314,12 @@ public class CoDMovement : VortexBehaviour
 
         Cursor.Locked = !EscMenu.IsOpen && Input.WindowFocused;
 
+        // every frame, open or not: the menu shows / hides its screens here — called only while open, the pause
+        // screen stayed on the picture after ESC closed the menu (and swallowed the clicks), the mouse re-captured under it
+        EscMenu.Tick(dt);
         if (EscMenu.IsOpen)
         {
             CameraFX.StopSway(0);
-            EscMenu.Tick(dt);            // renders + (while focused) handles the sliders/toggles/tabs
             _vx = 0f; _vz = 0f;
             return;
         }
