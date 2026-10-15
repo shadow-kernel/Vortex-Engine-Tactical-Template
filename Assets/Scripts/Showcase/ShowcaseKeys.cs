@@ -24,7 +24,7 @@ public class ShowcaseKeys : VortexBehaviour
 
     public override void Update(float dt)
     {
-        if (Input.GetKeyDown("H")) Help();
+        if (Input.GetKeyDown("F1")) Help();   // (H is the med-kit — PlayerHealth)
 
         // v3.1 Physics v2 — Jolt bodies, joints, contacts and character capsules as lines
         if (Input.GetKeyDown("F3"))
@@ -100,7 +100,7 @@ public class ShowcaseKeys : VortexBehaviour
 
     private void Help()
     {
-        Toast("FEATURE TOUR  H help · F3 physics debug · F4 Jolt character · F6 spawn bot · F7 AI debug · F8 volumetric fog · F9/F10 dig/raise terrain · F11 storm wind · P debug cam");
+        Toast("FEATURE TOUR  F1 help · F3 physics debug · F4 Jolt character · F6 spawn bot · F7 AI debug · F8 volumetric fog · F9/F10 dig/raise terrain · F11 storm wind · P debug cam");
         PlayerRig.ToastT = HelpSeconds;
     }
 

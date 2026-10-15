@@ -38,6 +38,8 @@ built to feel like Call of Duty — and every bit of it is a plain project scrip
 | **I** | inspect the weapon |
 | **1 / 2** · **Y** · wheel | switch weapon (holster + draw animations) |
 | **E** | interact — the **ammo crate** in the armory refills every weapon |
+| **H** | med-kit: +60 health (three at the start, the count sits by the health bar; health also creeps back after 5 s without a hit) |
+| **F1** | the feature tour's keys (F3–F11, see *Feature tour*) |
 | **ESC** | settings (sensitivity, horizontal FOV, aim toggle, audio, video) |
 | **P** (editor / dev builds) | free camera; **Caps Lock** hands control back to the player while you watch |
 
@@ -124,7 +126,7 @@ given in [ATTRIBUTIONS.md](ATTRIBUTIONS.md) (keep that credit when you ship); en
 
 ## Feature tour
 
-The Range doubles as the engine's showcase: every milestone has a station you can see, shoot and edit in the Inspector. Press **H** in play for the keys.
+The Range doubles as the engine's showcase: every milestone has a station you can see, shoot and edit in the Inspector. Press **F1** in play for the keys.
 
 | Milestone | Where | What to try |
 |-----------|-------|-------------|

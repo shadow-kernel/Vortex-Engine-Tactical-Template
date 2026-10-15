@@ -3,7 +3,7 @@ using Vortex;
 // Modern-shooter HUD (Call of Duty layout): compass strip top-centre, minimap top-left, weapon panel bottom-right
 // (name, big magazine count, reserve, a round-by-round strip, fire mode), a dynamic crosshair that opens with the
 // weapon's spread and fades out while aiming, hit markers, the "RELOAD" / "LOW AMMO" prompt and a slim health bar
-// bottom-left. Everything reads PlayerRig, which the movement and weapon scripts fill. One entity.
+// bottom-left with the med-kits [H]. Everything reads PlayerRig, which the movement and weapon scripts fill. One entity.
 // An Area with an "enterText" / "exitText" property (the Range's Bot Arena) shows it as a notice when the player walks
 // in / out.
 public class HudManager : VortexBehaviour
@@ -162,6 +162,8 @@ public class HudManager : VortexBehaviour
         Color c = frac > 0.5f ? Color.Rgba(242, 244, 247, 235) : (frac > 0.25f ? Accent : Color.Rgba(255, 70, 60, 245));
         UI.Rect(x, y, w * frac, h, c, 2f);
         UI.Text(((int)PlayerRig.Health).ToString(), x, y - 26f, 80f, 22f, 16f, White, 0, 800);
+        int kits = PlayerRig.Medkits;   // PlayerHealth: [H] heals
+        UI.Text("MED-KIT x" + kits + "  [H]", x + w - 150f, y - 21f, 150f, 16f, 11f, kits > 0 ? Dim : Color.Rgba(200, 110, 100, 200), 2, 700);
         if (frac < 0.35f)
         {
             // CoD low-health vignette (red edges)
