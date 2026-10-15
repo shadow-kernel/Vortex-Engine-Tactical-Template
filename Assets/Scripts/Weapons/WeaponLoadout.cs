@@ -37,7 +37,7 @@ public class WeaponLoadout : VortexBehaviour
             return;
         }
         PlayerRig.Switching = false;
-        if (!Cursor.Locked) return;
+        if (!Cursor.Locked || PlayerRig.Dead) return;
 
         bool k1 = Input.GetKey("D1"), k2 = Input.GetKey("D2"), kY = Input.GetKey("Y") || Input.GetGamepadButton("Y");
         int want = -1;

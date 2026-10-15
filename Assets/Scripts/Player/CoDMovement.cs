@@ -87,6 +87,49 @@ public static class PlayerRig
     // ---- player vitals (written by PlayerHealth, read by HudManager) ----
     public static float Health = 100f, MaxHealth = 100f;
     public static int   Medkits = 3;
+    public static bool  Dead;                      // from the killing hit to the respawn: no movement, no weapons
+
+    // ---- the player's body, for the enemies' shots (written by CoDMovement) ----
+    // The player is a character, not a collider: with the default "managed" controller no Physics.Raycast can hit it
+    // (with "jolt" its capsule is a physics body). A shot at the player casts its world ray — walls and cover stop it —
+    // and asks RayHitsBody whether the ray reaches the player's capsule before that (see Bot.Fire).
+    public static long  Entity;                                    // the Player entity — what the enemies' perception sees
+    public static float BodyRadius = 0.35f, BodyHeight = 1.85f;    // the capsule standing on FootPos (crouching lowers it)
+
+    /// <summary>Does the ray enter the player's capsule within <paramref name="maxDist"/>? <paramref name="dist"/> = how far
+    /// along the ray it does.</summary>
+    public static bool RayHitsBody(Vector3 origin, Vector3 dir, float maxDist, out float dist)
+    {
+        dist = 0f;
+        float len = (float)System.Math.Sqrt(dir.X * dir.X + dir.Y * dir.Y + dir.Z * dir.Z);
+        if (len < 1e-6f) return false;
+        Vector3 d = new Vector3(dir.X / len, dir.Y / len, dir.Z / len);
+        float r = BodyRadius, lo = FootPos.Y + r, hi = FootPos.Y + System.Math.Max(r, BodyHeight - r);   // the axis between the end spheres
+        float best = float.MaxValue;
+        // the side: a vertical cylinder around the axis
+        float ox = origin.X - FootPos.X, oz = origin.Z - FootPos.Z;
+        float a = d.X * d.X + d.Z * d.Z, b = ox * d.X + oz * d.Z, c = ox * ox + oz * oz - r * r;
+        if (a > 1e-8f && b * b - a * c >= 0f)
+        {
+            float t = (-b - (float)System.Math.Sqrt(b * b - a * c)) / a, y = origin.Y + d.Y * t;
+            if (t >= 0f && y >= lo && y <= hi) best = t;
+        }
+        // the ends: a sphere at each
+        best = System.Math.Min(best, RaySphere(origin, d, new Vector3(FootPos.X, lo, FootPos.Z), r));
+        best = System.Math.Min(best, RaySphere(origin, d, new Vector3(FootPos.X, hi, FootPos.Z), r));
+        if (best > maxDist) return false;
+        dist = best;
+        return true;
+    }
+
+    private static float RaySphere(Vector3 o, Vector3 d, Vector3 centre, float r)
+    {
+        float mx = o.X - centre.X, my = o.Y - centre.Y, mz = o.Z - centre.Z;
+        float b = mx * d.X + my * d.Y + mz * d.Z, c = mx * mx + my * my + mz * mz - r * r;
+        if (b * b - c < 0f) return float.MaxValue;
+        float t = -b - (float)System.Math.Sqrt(b * b - c);
+        return t >= 0f ? t : float.MaxValue;
+    }
 
     // ---- ammo / weapon (written by FPWeapon, read by HudManager) ----
     public static int    Ammo = 30, MagSize = 30, ReserveAmmo = 90;
@@ -214,6 +257,7 @@ public class CoDMovement : VortexBehaviour
     // frame (eye height + lean offset). Deriving the feet back from the camera made the lean offset integrate into
     // movement — the player drifted sideways while leaning.
     private Vector3 _feet;
+    private Vector3 _spawnFeet; private float _spawnYaw, _spawnPitch;   // the scene's start point: where a respawn puts you
     private bool  _mantling; private float _mantleT; private Vector3 _mantleFrom, _mantleTo;
     private float _sprintOutT; private bool _wasSprinting;
     private float _stepSmooth;         // camera offset that eases out abrupt grounded height changes (curbs, stairs)
@@ -238,6 +282,8 @@ public class CoDMovement : VortexBehaviour
         _eyeCur = _standEyeY;
         _feet = new Vector3(Position.X, Position.Y - EyeHeight, Position.Z);
         Vector3 r = Rotation; _pitch = r.X; _yaw = r.Y;
+        _spawnFeet = _feet; _spawnYaw = _yaw; _spawnPitch = _pitch;
+        PlayerRig.Entity = EntityId; PlayerRig.Dead = false;
         _levelCapture = System.Environment.GetEnvironmentVariable("VM_LEVEL") == "1";   // capture-only: lock a clean level view
         _forceAds     = System.Environment.GetEnvironmentVariable("VM_ADS") == "1";     // capture-only: force aim-down-sight
         _lookDown     = System.Environment.GetEnvironmentVariable("VM_DOWN") == "1";    // capture-only: look down to check body awareness
@@ -273,6 +319,15 @@ public class CoDMovement : VortexBehaviour
             CameraFX.StopSway(0);
             EscMenu.Tick(dt);            // renders + (while focused) handles the sliders/toggles/tabs
             _vx = 0f; _vz = 0f;
+            return;
+        }
+        // dead (PlayerHealth): no control until the respawn — the view holds still while the screen fades out
+        if (PlayerRig.Dead)
+        {
+            _vx = 0f; _vy = 0f; _vz = 0f; _sliding = false; _tacSprint = false;
+            _wantAdsFov = false; _wantSprintFov = false; _wantTacFov = false;
+            PlayerRig.Speed = 0f; PlayerRig.IsSprinting = false; PlayerRig.IsSliding = false;
+            UpdateFov(dt);
             return;
         }
         if (!Input.WindowFocused) { _vx = 0f; _vz = 0f; UpdateFov(dt); return; }
@@ -608,6 +663,7 @@ public class CoDMovement : VortexBehaviour
 
         // ---- world-character state (#178): feet anchor, body facing, aim pitch, locomotion intent ----
         PlayerRig.FootPos = _feet;                                 // ground contact (feet already resolved this frame)
+        PlayerRig.BodyRadius = CapsuleRadius; PlayerRig.BodyHeight = _capH;   // the capsule the enemies' shots test
         PlayerRig.BodyYaw = _yaw;                                  // body turns with the look (turn-in-place is a later refinement)
         PlayerRig.AimPitch = _pitch + _camRecPitch;                // includes recoil so the muzzle climbs with fire
         PlayerRig.MoveForwardN = wishX * fX + wishZ * fZ;          // +1 = running the way you face, -1 = backpedal
@@ -667,6 +723,16 @@ public class CoDMovement : VortexBehaviour
         _vx = 0f; _vz = 0f; _vy = 0f; _sliding = false; _tacSprint = false;
         PlayerRig.Mantling = true;
         _dipPV += 28f; _dipYV -= 0.3f;   // the climb pulls the view (and the gun) down a touch
+    }
+
+    // PlayerHealth after a death: back to the scene's start point — standing, still, facing the way the scene began
+    public override void OnMessage(string message, object arg)
+    {
+        if (message != "respawn") return;
+        _feet = _spawnFeet; _yaw = _spawnYaw; _pitch = _spawnPitch;
+        _vx = 0f; _vy = 0f; _vz = 0f; _speedSmooth = 0f; _grounded = true;
+        _sliding = false; _mantling = false; PlayerRig.Mantling = false;
+        _capH = CapsuleHeight; _lowCeiling = false; _eyeCur = _standEyeY; _stepSmooth = 0f;
     }
 
     private static float Clamp01(float v) { return v < 0f ? 0f : (v > 1f ? 1f : v); }

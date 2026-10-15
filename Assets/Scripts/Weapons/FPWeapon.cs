@@ -209,7 +209,7 @@ public class FPWeapon : VortexBehaviour
         if (_spreadKick > 0f) { _spreadKick -= SpreadRecovery * dt * (0.4f + _spreadKick); if (_spreadKick < 0f) _spreadKick = 0f; }
         PlayerRig.Ammo = Mag; PlayerRig.MagSize = MagazineSize;
         PlayerRig.ReserveAmmo = Reserve; PlayerRig.WeaponName = WeaponName; PlayerRig.FireModeSemi = _semi;
-        bool menu = !Cursor.Locked;
+        bool menu = !Cursor.Locked || PlayerRig.Dead;   // the ESC menu, an unfocused window or a dead player: no input
 
         // ---- sprint: gun down (Run clip), no fire until the sprint-out time has passed ----
         bool sprinting = PlayerRig.IsSprinting && !PlayerRig.IsSliding;

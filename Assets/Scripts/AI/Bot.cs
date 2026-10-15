@@ -8,9 +8,9 @@ using Vortex;
 //     player's line of sight — the tree runs there, holds, peeks, repeats
 //   * aim error: a reaction time before the first shot, a spread that tightens while the target stays in view,
 //     bursts with gaps — three presets (recruit / regular / veteran) in Difficulty
-//   * shots are raycasts ("damage" to whoever is hit, like the player's weapons), with a muzzle sound and a noise
-//     every other bot hears; hits on the bot flinch the spine (additive), at zero health the body ragdolls with the
-//     bullet's impulse and despawns later
+//   * shots are raycasts ("damage" to whoever is hit, like the player's weapons — the player, which is a character and no
+//     collider, through PlayerRig.RayHitsBody), with a muzzle sound and a noise every other bot hears; hits on the bot
+//     flinch the spine (additive), at zero health the body ragdolls with the bullet's impulse and despawns later
 // All of it is a project script — the engine ticks the tree, moves the agent and senses; the game decides what it means.
 public class Bot : VortexBehaviour
 {
@@ -107,18 +107,20 @@ public class Bot : VortexBehaviour
         _nextShot -= dt;
         if (_nextShot > 0f) return;
         if (_burstLeft <= 0) _burstLeft = BurstShots;
-        Fire(me, tp, dist);
+        Fire(me, dist);
         _burstLeft--;
         _nextShot = _burstLeft > 0 ? BurstInterval : BurstGap + (float)_rng.NextDouble() * 0.3f;
     }
 
-    private void Fire(Vector3 me, Vector3 target, float dist)
+    private void Fire(Vector3 me, float dist)
     {
         // aim error: the tracking time since first sight tightens the spread from SpreadStart to SpreadEnd
         float t = TightenSeconds <= 0f ? 1f : System.Math.Min(1f, System.Math.Max(0f, (_sight - ReactionTime) / TightenSeconds));
         float spreadDeg = SpreadStart + (SpreadEnd - SpreadStart) * t;
         Vector3 muzzle = new Vector3(me.X, me.Y + 1.55f, me.Z);
-        Vector3 aim = new Vector3(target.X, target.Y + 1.25f, target.Z);
+        Vector3 feet; float height;
+        TargetBody(out feet, out height);
+        Vector3 aim = new Vector3(feet.X, feet.Y + height * 0.7f, feet.Z);   // the chest
         Vector3 dir = Norm(aim - muzzle);
         // jitter the aim point sideways / up by up to spread degrees
         float err = (float)System.Math.Tan(spreadDeg * System.Math.PI / 180.0) * System.Math.Max(dist, 1f);
@@ -129,6 +131,16 @@ public class Bot : VortexBehaviour
 
         RaycastHit hit;
         bool didHit = Physics.Raycast(muzzle, dir, FireRange + 5f, out hit, ~0, EntityId);
+        // The world ray stops at the first collider: a wall, cover, another bot — and with the "jolt" controller the
+        // player's capsule. With the default "managed" controller the player is no physics body, so a ray that enters the
+        // player's capsule (PlayerRig) before it reaches whatever it hit is a hit on the player; cover in between stops it.
+        float body;
+        if (_target == PlayerRig.Entity && !(didHit && hit.EntityId == _target)
+            && PlayerRig.RayHitsBody(muzzle, dir, didHit ? hit.Distance : FireRange + 5f, out body))
+        {
+            didHit = true;
+            hit.Point = muzzle + dir * body; hit.Normal = -dir; hit.Distance = body; hit.EntityId = _target;
+        }
         if (didHit && hit.EntityId == _target) SendMessage(hit.EntityId, "damage", Damage);
         PlayAnimationLayered(ClipDir + "rifle_fire.vanim", 1, UpperMask, 1f, 0.03f);
         ShotVfx(me, dir, didHit, hit);
@@ -191,8 +203,9 @@ public class Bot : VortexBehaviour
     {
         var bb = BehaviorTree.BlackboardOf(EntityId);
         if (bb == null || _target == 0) return;
-        Vector3 me = WorldPosition, tp = Scene.WorldPositionOf(_target);
-        Vector3 eye = new Vector3(tp.X, tp.Y + 1.5f, tp.Z);
+        Vector3 me = WorldPosition, tp; float height;
+        TargetBody(out tp, out height);
+        Vector3 eye = new Vector3(tp.X, tp.Y + height * 0.9f, tp.Z);
         for (int i = 0; i < 14; i++)
         {
             Vector3 p;
@@ -228,6 +241,15 @@ public class Bot : VortexBehaviour
     {
         var bb = BehaviorTree.BlackboardOf(EntityId);
         return bb != null ? bb.GetEntity("Target") : 0;
+    }
+
+    /// <summary>Where the target stands and how tall it is. The Player entity is the camera (at eye height), so the
+    /// player's body comes from PlayerRig — the capsule CoDMovement moves, crouching included; anything else stands on its
+    /// origin.</summary>
+    private void TargetBody(out Vector3 feet, out float height)
+    {
+        if (_target == PlayerRig.Entity) { feet = PlayerRig.FootPos; height = PlayerRig.BodyHeight; return; }
+        feet = Scene.WorldPositionOf(_target); height = 1.8f;
     }
 
     private static Vector3 Norm(Vector3 v)

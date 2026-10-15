@@ -1,7 +1,7 @@
 {
   "name": "Bot",
   "version": 1,
-  "description": "A combat bot for the kill house: engage the player on sight from cover, investigate shots and footsteps, search the last known spot, otherwise patrol. The built-in tasks move the agent and read its perception; Bot.cs (the Script on the prefab) picks cover points, aims, fires, flinches and dies — every SendMessage node lands there as OnMessage(\"bot.<state>\").",
+  "description": "A combat bot for the kill house: engage the player on sight from cover, investigate shots and footsteps, search the last known spot, otherwise patrol. The sight and hearing guards are DECORATORS directly under the root selector, so their aborts cut a patrol leg or a search the moment they pass. The built-in tasks move the agent and read its perception; Bot.cs (the Script on the prefab) picks cover points, aims, fires, flinches and dies — every SendMessage node lands there as OnMessage(\"bot.<state>\").",
   "blackboard": {
     "EngageDistance": "28"
   },
@@ -11,41 +11,50 @@
     "name": "Bot",
     "children": [
       {
-        "id": "engag001",
-        "kind": "sequence",
-        "name": "Engage",
-        "comment": "The player is in sight: tell the script (it aims and fires while the target stays visible), move to the cover point the script picked, hold there a moment, repeat — the script picks a new cover point on every bot.engage.",
+        "id": "engag002", "kind": "condition", "task": "CanSee", "name": "the player in sight?", "abort": "both", "params": { "key": "Target" },
+        "comment": "A guard with a subtree: observed from the selector, it aborts whatever runs below the moment the player is seen, and the engagement itself when sight is lost. (As the first step of the Engage sequence it was only checked when the selector started over — a bot walked a whole patrol leg past the player.)",
         "children": [
-          { "id": "engag002", "kind": "condition", "task": "CanSee", "abort": "both", "params": { "key": "Target" } },
-          { "id": "engag003", "kind": "task", "task": "SendMessage", "name": "tell: engage", "params": { "message": "bot.engage" } },
-          { "id": "engag004", "kind": "task", "task": "Wait", "name": "fire from here", "params": { "seconds": "1.2", "random": "0.8" } },
           {
-            "id": "engag005", "kind": "succeeder", "name": "relocate (if a cover point exists)",
+            "id": "engag001",
+            "kind": "sequence",
+            "name": "Engage",
+            "comment": "The player is in sight: tell the script (it aims and fires while the target stays visible), move to the cover point the script picked, hold there a moment, repeat — the script picks a new cover point on every bot.engage.",
             "children": [
+              { "id": "engag003", "kind": "task", "task": "SendMessage", "name": "tell: engage", "params": { "message": "bot.engage" } },
+              { "id": "engag004", "kind": "task", "task": "Wait", "name": "fire from here", "params": { "seconds": "1.2", "random": "0.8" } },
               {
-                "id": "engag006", "kind": "sequence",
+                "id": "engag005", "kind": "succeeder", "name": "relocate (if a cover point exists)",
                 "children": [
-                  { "id": "engag007", "kind": "condition", "task": "HasValue", "params": { "key": "CoverPoint" } },
-                  { "id": "engag008", "kind": "task", "task": "MoveTo", "name": "run to cover", "params": { "target": "CoverPoint", "acceptance": "0.8", "speed": "4.4" } },
-                  { "id": "engag009", "kind": "task", "task": "ClearValue", "params": { "key": "CoverPoint" } }
+                  {
+                    "id": "engag006", "kind": "sequence",
+                    "children": [
+                      { "id": "engag007", "kind": "condition", "task": "HasValue", "params": { "key": "CoverPoint" } },
+                      { "id": "engag008", "kind": "task", "task": "MoveTo", "name": "run to cover", "params": { "target": "CoverPoint", "acceptance": "0.8", "speed": "4.4" } },
+                      { "id": "engag009", "kind": "task", "task": "ClearValue", "params": { "key": "CoverPoint" } }
+                    ]
+                  }
                 ]
-              }
+              },
+              { "id": "engag010", "kind": "task", "task": "Wait", "name": "peek", "params": { "seconds": "1.5", "random": "1.5" } }
             ]
-          },
-          { "id": "engag010", "kind": "task", "task": "Wait", "name": "peek", "params": { "seconds": "1.5", "random": "1.5" } }
+          }
         ]
       },
       {
-        "id": "inves001",
-        "kind": "sequence",
-        "name": "Investigate",
-        "comment": "A shot or sprinting footsteps: walk toward the noise, look around.",
+        "id": "inves002", "kind": "condition", "task": "HasHeard", "name": "a noise?", "abort": "lowerPriority", "params": { "maxAge": "10", "key": "HeardAt" },
         "children": [
-          { "id": "inves002", "kind": "condition", "task": "HasHeard", "abort": "lowerPriority", "params": { "maxAge": "10", "key": "HeardAt" } },
-          { "id": "inves003", "kind": "task", "task": "SendMessage", "name": "tell: investigate", "params": { "message": "bot.investigate" } },
-          { "id": "inves004", "kind": "task", "task": "MoveTo", "name": "advance on the noise", "params": { "target": "HeardAt", "acceptance": "3", "speed": "3.0" } },
-          { "id": "inves005", "kind": "task", "task": "Wait", "name": "scan", "params": { "seconds": "2", "random": "2" } },
-          { "id": "inves006", "kind": "task", "task": "ForgetTarget", "params": { "key": "HeardAt" } }
+          {
+            "id": "inves001",
+            "kind": "sequence",
+            "name": "Investigate",
+            "comment": "A shot or sprinting footsteps: walk toward the noise, look around.",
+            "children": [
+              { "id": "inves003", "kind": "task", "task": "SendMessage", "name": "tell: investigate", "params": { "message": "bot.investigate" } },
+              { "id": "inves004", "kind": "task", "task": "MoveTo", "name": "advance on the noise", "params": { "target": "HeardAt", "acceptance": "3", "speed": "3.0" } },
+              { "id": "inves005", "kind": "task", "task": "Wait", "name": "scan", "params": { "seconds": "2", "random": "2" } },
+              { "id": "inves006", "kind": "task", "task": "ForgetTarget", "params": { "key": "HeardAt" } }
+            ]
+          }
         ]
       },
       {
