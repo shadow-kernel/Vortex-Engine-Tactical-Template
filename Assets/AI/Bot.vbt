@@ -65,7 +65,7 @@
         "children": [
           { "id": "searc002", "kind": "condition", "task": "LastKnownPosition", "params": { "key": "LastKnown" } },
           { "id": "searc003", "kind": "task", "task": "SendMessage", "name": "tell: search", "params": { "message": "bot.search" } },
-          { "id": "searc004", "kind": "task", "task": "MoveTo", "name": "sweep the last known spot", "params": { "target": "LastKnown", "acceptance": "2", "speed": "3.0" } },
+          { "id": "searc004", "kind": "task", "task": "MoveTo", "name": "sweep the last known spot", "params": { "target": "LastKnown", "acceptance": "1.05", "speed": "3.0" } },
           { "id": "searc005", "kind": "task", "task": "Wait", "params": { "seconds": "3", "random": "2" } },
           { "id": "searc006", "kind": "task", "task": "ForgetTarget", "params": { "key": "Target" } }
         ]
